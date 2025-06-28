@@ -657,7 +657,7 @@ function displayProducts(query = '') {
         card.innerHTML = `
             <img class="product-image" src="${prod.image_url || 'image.png'}" alt="${prod.product_name}">
             <h3>${prod.product_name || ''}</h3>
-            <p>${prod.description || ''}</p>
+                  <p class="product-description">${prod.description || ''}</p>
             <p><b>Price:</b> ₹${prod.price || '0.00'}</p>
             <p><b>Category:</b> ${prod.category || ''}</p>
           `;
