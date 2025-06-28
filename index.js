@@ -1,4 +1,3 @@
-// 1. Imports
 import { firebaseConfig } from './firebase-config.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import {
@@ -23,20 +22,25 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 const messaging = getMessaging(app);
+
 document.addEventListener("DOMContentLoaded", () => {
   const installBtn = document.getElementById("installBtn"); // desktop
   const mobileInstallBtn = document.getElementById("mobileInstallBtn"); // mobile
   const popup = document.getElementById("customInstallPrompt");
   const installNowBtn = document.getElementById("installNowBtn");
   const dismissBtn = document.getElementById("dismissInstallBtn");
+
   let deferredPrompt = null;
+
   const isAppInstalled = () =>
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
   if (isAppInstalled()) {
     if (installBtn) installBtn.style.display = "none";
     if (mobileInstallBtn) mobileInstallBtn.style.display = "none";
     return;
   }
+
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -46,19 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
       popup.style.display = "block";
       localStorage.setItem("installPromptShown", "true");
     }
+
     if (installBtn) installBtn.style.display = "inline-flex";
     if (mobileInstallBtn) mobileInstallBtn.style.display = "inline-flex";
   });
+
   window.addEventListener("appinstalled", () => {
     console.log("✅ App was installed");
     if (installBtn) installBtn.style.display = "none";
     if (mobileInstallBtn) mobileInstallBtn.style.display = "none";
+    // Optionally shrink searchbar or do other UI changes
     const searchbar = document.getElementById('marketNavbarSearchbar');
     if (searchbar) {
       searchbar.classList.add('shrinked');
       searchbar.classList.remove('shrinked');
     }
   });
+
   const handleInstall = (btn) => {
     if (!btn) return;
     btn.addEventListener("click", () => {
@@ -75,8 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   };
+
   handleInstall(installBtn);
   handleInstall(mobileInstallBtn);
+
   if (installNowBtn) {
     installNowBtn.addEventListener("click", () => {
       if (popup) popup.style.display = "none";
@@ -90,16 +100,20 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
   if (dismissBtn) {
     dismissBtn.addEventListener("click", () => {
       if (popup) popup.style.display = "none";
     });
   }
 });
+
 onMessage(messaging, (payload) => {
   console.log("📩 Message received:", payload);
   alert(`🔔 ${payload.notification?.title}\n${payload.notification?.body}`);
 });
+
+]
 let currentUser = null;
 const loginBtn = document.getElementById('navbarLoginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
@@ -112,11 +126,15 @@ onAuthStateChanged(auth, user => {
     if (loginBtn) loginBtn.style.display = 'inline-block';
     if (logoutBtn) logoutBtn.style.display = 'none';
   }
+
   const userEmailSpan = document.getElementById('userEmail');
+
   const trayLoginBtn = document.getElementById('trayLoginBtn');
   const trayLogoutBtn = document.getElementById('trayLogoutBtn');
   const trayUserEmail = document.getElementById('trayUserEmail');
+
   const mobileInstallBtn = document.getElementById('mobileInstallBtn');
+
   if (user) {
     if (loginBtn) loginBtn.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'inline-block'; // ✅ Show logout everywhere
@@ -124,9 +142,12 @@ onAuthStateChanged(auth, user => {
       userEmailSpan.style.display = 'inline-block';
       userEmailSpan.textContent = `Your ID is - ${user.email}`;
     }
+
     if (trayLoginBtn) trayLoginBtn.style.display = 'none';
     if (trayLogoutBtn) trayLogoutBtn.style.display = 'block';
     if (trayUserEmail) trayUserEmail.textContent = user.email;
+
+    // ✅ Show logoutBtn even in mobile layout
     if (window.innerWidth <= 480 && logoutBtn) {
       logoutBtn.style.display = 'inline-block';
     }
@@ -142,28 +163,43 @@ onAuthStateChanged(auth, user => {
 
     if (mobileInstallBtn) mobileInstallBtn.style.display = 'none';
   }
+
+
+
 });
+
+
+// Desktop Logout
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
   signOut(auth);
 });
+
+// Tray Logout
 document.getElementById('trayLogoutBtn')?.addEventListener('click', () => {
   signOut(auth);
 });
+
+// 3. Track current user globally
+
+// tray
+// Mobile Tray JavaScript
 document.addEventListener('DOMContentLoaded', function () {
   const tray = document.getElementById('mobileTray');
   const closeTrayBtn = document.getElementById('closeTrayBtn');
   const trayCartBtn = document.getElementById('trayCartBtn');
+  // Cart button
   if (trayCartBtn) {
     trayCartBtn.onclick = function () {
       window.location.href = 'cart.html';
     };
   }
-   const trayAdminBtn = document.getElementById('trayAdminBtn');
+    const trayAdminBtn = document.getElementById('trayAdminBtn');
   const trayLoginBtn = document.getElementById('trayLoginBtn');
   const trayLogoutBtn = document.getElementById('trayLogoutBtn');
   document.querySelector('.market-navbar__hamburger').addEventListener('click', function () {
     tray.classList.add('open');
   });
+
   closeTrayBtn.addEventListener('click', function () {
     tray.classList.remove('open');
   });
@@ -178,31 +214,36 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('loginModal').style.display = 'block';
     tray.classList.remove('open');
   };
-
   trayLogoutBtn.onclick = () => {
     signOut(auth);
     tray.classList.remove('open');
   };
 });
+
 document.getElementById('navbarLoginBtn').onclick = () =>
   document.getElementById('loginModal').style.display = 'block';
 document.getElementById('logoutBtn').onclick = () => signOut(auth);
+
+// 5. reCAPTCHA
 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
   size: 'invisible',
   callback: () => { }
 });
 
-document.getElementById('registerBtn').onclick = () => {
-  const e = document.getElementById('authEmail').value,
-    p = document.getElementById('authPassword').value;
-  createUserWithEmailAndPassword(auth, e, p)
-    .then(uc => sendEmailVerification(uc.user).then(() => {
-      alert("✅ Verification sent, please check email.");
-      document.getElementById('loginModal').style.display = 'none';
-      signOut(auth);
-    }))
-    .catch(err => alert("❌ Registration failed: " + err.message));
-};
+const registerBtn = document.getElementById('registerBtn');
+if (registerBtn) {
+  registerBtn.onclick = () => {
+    const e = document.getElementById('authEmail').value,
+      p = document.getElementById('authPassword').value;
+    createUserWithEmailAndPassword(auth, e, p)
+      .then(uc => sendEmailVerification(uc.user).then(() => {
+        alert("✅ Verification sent, please check email.");
+        document.getElementById('loginModal').style.display = 'none';
+        signOut(auth);
+      }))
+      .catch(err => alert("❌ Registration failed: " + err.message));
+  };
+}
 
 document.getElementById('loginBtn').onclick = () => {
   const email = document.getElementById('authEmail').value;
@@ -223,46 +264,56 @@ document.getElementById('loginBtn').onclick = () => {
     .catch(err => alert("❌ Login failed: " + err.message));
 };
 
-
 document.getElementById('googleLoginBtn').onclick = () => {
   const prov = new GoogleAuthProvider();
   signInWithPopup(auth, prov)
     .then(() => { alert("✅ Google Sign-In successful!"); document.getElementById('loginModal').style.display = 'none'; })
     .catch(err => alert("❌ Google Sign-In failed: " + err.message));
 };
+
 const form = document.getElementById('sellForm');
 const spinner = document.getElementById('loading-spinner');
 const cloudName = 'dobzp321s';
 const uploadPreset = 'your_upload_preset';
+
 const sellerName = document.getElementById('sellerName').value.trim();
 const sellerMobile = document.getElementById('sellerMobile').value.trim();
 form.addEventListener('submit', async e => {
   e.preventDefault();
+
   if (!currentUser) {
     alert("Please log in to submit your product.");
     document.getElementById('loginModal').style.display = 'block';
     return;
   }
+
   spinner.style.display = 'block';
+
   const imageFile = document.getElementById("imageFile").files[0];
   if (!imageFile) {
     alert("Please select an image file.");
     spinner.style.display = 'none';
     return;
   }
+
   const fd = new FormData();
   fd.append('file', imageFile);
   fd.append('upload_preset', uploadPreset);
+
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: 'POST',
       body: fd
     });
+
     const data = await res.json();
     if (!data.secure_url) throw new Error('Cloudinary upload failed');
+
     const productImageUrl = data.secure_url; // This is the product image URL
+
     const orig = parseFloat(document.getElementById('productPrice').value);
     const disp = (orig * 1.025).toFixed(2);
+
     const product = {
       product_name: document.getElementById('productName').value,
       category: document.getElementById('productCategory').value,
@@ -273,13 +324,16 @@ form.addEventListener('submit', async e => {
       seller_mobile: document.getElementById('sellerMobile').value,
       submitted_by: currentUser.email
     };
+
     const seller = {
       seller_name: document.getElementById('sellerName').value,
       seller_mobile: document.getElementById('sellerMobile').value,
       submitted_by: currentUser.email
     };
+
     if (product.isDemo) {
       card.querySelector('.price').innerHTML = `<del>₹${product.originalPrice}</del> <strong style="color:#388e3c;">₹0</strong>`;
+
       const demoLabel = document.createElement("div");
       demoLabel.className = "demo-label";
       demoLabel.innerHTML = "🧪 Demo Product – No Payment Required<br><span>Use Pay ID: <strong>pay_12345678</strong></span>";
@@ -428,6 +482,7 @@ sortSelect.addEventListener('change', () => {
   displayProducts(document.getElementById('searchInput').value.trim());
 });
 
+// 9. FETCH & DISPLAY PRODUCTS (CATEGORY-WISE HORIZONTAL SCROLL FOR MOBILE)
 function displayProducts(query = '') {
   const shopSection = document.getElementById('shopSection');
   const loadingSpinner = document.getElementById('product-loading-spinner');
@@ -505,7 +560,7 @@ function displayProducts(query = '') {
             <p><b>Price:</b> ₹${prod.price || '0.00'}</p>
             <p><b>Category:</b> ${prod.category || ''}</p>
           `;
-        // Add click handler to proceed to payment page
+
         card.style.cursor = 'pointer';
        card.addEventListener('click', () => {
   const selected = {
@@ -578,6 +633,8 @@ document.addEventListener('click', (e) => {
   }
 });
 
+
+// HEADLINES TO CYCLE THROUGH
 const headlines = [
   "🎉 <strong>0 Listing Fees</strong> for a Limited Time! Upload Free for 1 Week!",
   "🚀 Join Now – Post Products Without Paying!",
@@ -597,10 +654,12 @@ setInterval(() => {
     headlineEl.style.opacity = 1;
   }, 400);
 }, 4000);
+
+
 // ✅ UNIVERSAL COUNTDOWN TIMER (Fixed for all users)
 const countdown = document.getElementById("countdownTimer");
 // Set your universal offer end date here 👇
-const offerEndDate = new Date("2025-07-7T00:00:00").getTime();
+const offerEndDate = new Date("2025-06-30T00:00:00").getTime();
 function updateCountdown() {
   const now = new Date().getTime();
   const distance = offerEndDate - now;
@@ -618,9 +677,14 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// 10. NOTIFICATION PERMISSION & FCM TOKEN
 onAuthStateChanged(auth, user => {
   currentUser = user;
+  // ... your UI logic ...
+
   if (user) {
+    // Request notification permission and get token only after login
     Notification.requestPermission().then((permission) => {
       if (permission !== "granted") {
         console.warn("❌ Notification permission denied.");
@@ -662,7 +726,7 @@ onAuthStateChanged(auth, user => {
 function updateNotifyFabVisibility() {
   const fab = document.getElementById("enableNotifyFab");
   if (!fab) return;
-
+  // Only show on mobile and if not granted
   if (window.innerWidth <= 420 && window.Notification && Notification.permission !== "granted") {
     fab.style.display = "flex";
   } else {
@@ -672,6 +736,7 @@ function updateNotifyFabVisibility() {
 window.addEventListener("DOMContentLoaded", updateNotifyFabVisibility);
 window.addEventListener("resize", updateNotifyFabVisibility);
 document.addEventListener("visibilitychange", updateNotifyFabVisibility);
+
 document.getElementById("enableNotifyFab").onclick = function() {
   if (!window.Notification) {
     alert("Notifications are not supported in your browser.");
@@ -680,14 +745,18 @@ document.getElementById("enableNotifyFab").onclick = function() {
   Notification.requestPermission().then(permission => {
     updateNotifyFabVisibility();
     if (permission === "granted") {
+
     } else if (permission === "denied") {
+
       document.getElementById("notifyHelpPopup").style.display = "flex";
     }
   });
 };
+
 document.getElementById("closeNotifyHelp").onclick = function() {
   document.getElementById("notifyHelpPopup").style.display = "none";
 };
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("firebase-messaging-sw.js", { scope: "./" })
