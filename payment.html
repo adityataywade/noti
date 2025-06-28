@@ -594,14 +594,47 @@ await set(ref(db, `carts/${user.uid}/${customPayId}`), cartProduct);
         return;
       }
 
+      // Set product info in DOM
       document.getElementById("productName").textContent = product.product_name;
       document.getElementById("productDescription").textContent = product.description;
       document.getElementById("productCategory").textContent = product.category;
       document.getElementById("productPrice").textContent = product.price;
       document.getElementById("productImage").style.backgroundImage = `url(${product.image_url})`;
 
+      // Attach a single event listener for UPI Pay button
       const upiButton = document.getElementById("upiPayButton");
-      upiButton.addEventListener("click", () => {
+      upiButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+
+        const user = auth.currentUser;
+        if (!user) {
+          alert("⚠️ Please log in to make a payment.");
+          window.location.href = "index.html#loginModal";
+          return;
+        }
+
+        // Prepare buyer info
+        const buyerInfo = {
+          userId: user.uid,
+          email: user.email,
+          buyer_name: user.displayName || "anonymous",
+          productId: product.id || "",
+          productName: product.product_name || "",
+          price: product.price || "",
+          category: product.category || "",
+          image_url: product.image_url || "",
+          timestamp: new Date().toISOString()
+        };
+
+        // Store in Payviaupi node
+        try {
+          await push(ref(db, "Payviaupi"), buyerInfo);
+          console.log("✅ Buyer info stored in Payviaupi:", buyerInfo);
+        } catch (err) {
+          console.error("❌ Failed to store Payviaupi info:", err);
+        }
+
+        // Open UPI app
         const upiLink = `upi://pay?pa=dipaktaywade3@okaxis&pn=CampusMart&am=${product.price}&cu=INR`;
         window.location.href = upiLink;
       });
@@ -622,48 +655,6 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
 });
 
-document.getElementById("upiPayButton").addEventListener("click", async function (e) {
-  e.preventDefault();
-
-  const user = auth.currentUser;
-  if (!user) {
-    alert("⚠️ Please log in to make a payment.");
-    window.location.href = "index.html#loginModal";
-    return;
-  }
-
-  // Get product info from localStorage
-  const product = JSON.parse(localStorage.getItem("selectedProduct"));
-  if (!product) {
-    alert("❌ No product found in localStorage.");
-    return;
-  }
-
-  // Prepare buyer info
-  const buyerInfo = {
-    userId: user.uid,
-    email: user.email,
-    buyer_name: user.displayName || "anonymous",
-    productId: product.id || "",
-    productName: product.product_name || "",
-    price: product.price || "",
-    category: product.category || "",
-    image_url: product.image_url || "",
-    timestamp: new Date().toISOString()
-  };
-
-  // Store in Payviaupi node
-  try {
-    await push(ref(db, "Payviaupi"), buyerInfo);
-    console.log("✅ Buyer info stored in Payviaupi:", buyerInfo);
-  } catch (err) {
-    console.error("❌ Failed to store Payviaupi info:", err);
-  }
-
-  // Continue with your existing logic (e.g., open UPI app)
-  const upiLink = `upi://pay?pa=dipaktaywade3@okaxis&pn=CampusMart&am=${product.price}&cu=INR`;
-  window.location.href = upiLink;
-});
 
 
   </script>
