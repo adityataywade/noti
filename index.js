@@ -432,107 +432,107 @@ form.addEventListener('submit', async e => {
 
     spinner.style.display = 'none';
 
-    const fee = (orig * 0.05).toFixed(2);
+    // seller commision
 
-    const modalHtml = `
-  <div id="paymentPromptModal" class="modal" style="display:block;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);">
-    <div style="background:white;padding:20px;margin:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,
-    -50%);width:90%;max-width:500px;text-align:center;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-      <span id="closePaymentModal" style="position:absolute;top:10px;right:20px;cursor:pointer;font-size:24px">&times;</span>
-      <h2>Complete Your Listing</h2>
-       <p>Please pay ₹${fee} to list your product.</p>
-      <img src="payment.jpg" alt="UPI QR" style="max-width:250px;margin:20px 0;"/>
-      <p>UPI ID: <b>dipaktaywade3@okaxis</b></p>
-      <form id="paymentProofForm">
-        <input type="text" id="upiRef" placeholder="Enter UPI Reference ID" required style="width:90%;padding:10px;margin:10px 0;border-radius:6px;border:1px solid #ccc;"/>
-        <p style="margin:10px 0;font-weight:bold;">Send proof screenshot</p>
-        <input type="file" id="upiScreenshot" accept="image/*" required style="margin:10px 0;"/>
-       <!-- Add this to your HTML -->
-<style>
-  button[type="submit"]:hover {
-    background: #45a049; /* Slightly darker green */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
-    transition: background 0.3s, box-shadow 0.3s; /* Smooth transition */
-  }
-</style>
+//     const fee = (orig * 0.05).toFixed(2);
+//     const modalHtml = `
+//   <div id="paymentPromptModal" class="modal" style="display:block;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);">
+//     <div style="background:white;padding:20px;margin:auto;position:absolute;top:50%;left:50%;transform:translate(-50%,
+//     -50%);width:90%;max-width:500px;text-align:center;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+//       <span id="closePaymentModal" style="position:absolute;top:10px;right:20px;cursor:pointer;font-size:24px">&times;</span>
+//       <h2>Complete Your Listing</h2>
+//        <p>Please pay ₹${fee} to list your product.</p>
+//       <img src="payment.jpg" alt="UPI QR" style="max-width:250px;margin:20px 0;"/>
+//       <p>UPI ID: <b>dipaktaywade3@okaxis</b></p>
+//       <form id="paymentProofForm">
+//         <input type="text" id="upiRef" placeholder="Enter UPI Reference ID" required style="width:90%;padding:10px;margin:10px 0;border-radius:6px;border:1px solid #ccc;"/>
+//         <p style="margin:10px 0;font-weight:bold;">Send proof screenshot</p>
+//         <input type="file" id="upiScreenshot" accept="image/*" required style="margin:10px 0;"/>
+//        <!-- Add this to your HTML -->
+// <style>
+//   button[type="submit"]:hover {
+//     background: #45a049; /* Slightly darker green */
+//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+//     transition: background 0.3s, box-shadow 0.3s; /* Smooth transition */
+//   }
+// </style>
 
-<!-- Button -->
-<button type="submit" style="padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;">Confirm Payment</button>
-      </form>
-    </div>
-  </div>`;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+// <!-- Button -->
+// <button type="submit" style="padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;">Confirm Payment</button>
+//       </form>
+//     </div>
+//   </div>`;
+//     document.body.insertAdjacentHTML('beforeend', modalHtml);
+//     // Add listeners only after modal is added:
+//     const closeBtn = document.getElementById('closePaymentModal');
+//     if (closeBtn) {
+//       closeBtn.addEventListener('click', () => {
+//         const modal = document.getElementById('paymentPromptModal');
+//         if (modal) modal.remove();
+//       });
+//     }
+
+//     const paymentProofForm = document.getElementById('paymentProofForm');
+//     if (paymentProofForm) {
+//       paymentProofForm.addEventListener('submit', async event => {
+//         event.preventDefault();
+
+//         const upiRef = document.getElementById('upiRef').value.trim();
+//         const screenshotFile = document.getElementById('upiScreenshot').files[0];
+
+//         if (!upiRef || !screenshotFile) {
+//           alert("Please enter UPI Reference ID and upload screenshot.");
+//           return;
+//         }
+
+//         const spinner = document.getElementById('spinner');
+//         if (spinner) spinner.style.display = 'block';
+
+//         try {
+//           // Upload screenshot to Cloudinary
+//           const fd = new FormData();
+//           fd.append('file', screenshotFile);
+//           fd.append('upload_preset', uploadPreset);
+
+//           const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+//             method: 'POST',
+//             body: fd
+//           });
+
+//           const data = await res.json();
+//           if (!data.secure_url) throw new Error('Cloudinary upload failed');
+
+//           // ✅ JS code to send proper ISO-format IST time
+//           const paymentData = {
+//             product_key: productKey,
+//             user_email: currentUser.email,
+//             upi_ref: upiRef,
+//             screenshot_url: data.secure_url,
+//             timestamp: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Kolkata" }).replace(' ', 'T'), // ✅ IST in ISO format
+//             status: "submitted",
+//             seller_name: document.getElementById('sellerName').value,
+//             seller_mobile: document.getElementById('sellerMobile').value
+//           };
+
+//           // 1. ✅ Save payment info to Firebase
+//           await push(ref(db, 'seller_payments'), paymentData);
+//           console.log("✅ Payment saved to Firebase!");
 
 
-    // Add listeners only after modal is added:
-    const closeBtn = document.getElementById('closePaymentModal');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        const modal = document.getElementById('paymentPromptModal');
-        if (modal) modal.remove();
-      });
-    }
+//           alert("✅ Payment proof submitted ");
+//           document.getElementById('paymentPromptModal').remove();
+//           paymentProofForm.reset();
+//         } catch (err) {
+//           console.error("❌ Error submitting payment proof:", err);
+//           alert("❌ Error: " + err.message);
+//         } finally {
+//           if (spinner) spinner.style.display = 'none';
+//         }
+//       });
+//     }
+// alert("✅ Product submitted successfully! Please complete the payment to list your product.");
 
-    const paymentProofForm = document.getElementById('paymentProofForm');
-    if (paymentProofForm) {
-      paymentProofForm.addEventListener('submit', async event => {
-        event.preventDefault();
-
-        const upiRef = document.getElementById('upiRef').value.trim();
-        const screenshotFile = document.getElementById('upiScreenshot').files[0];
-
-        if (!upiRef || !screenshotFile) {
-          alert("Please enter UPI Reference ID and upload screenshot.");
-          return;
-        }
-
-        const spinner = document.getElementById('spinner');
-        if (spinner) spinner.style.display = 'block';
-
-        try {
-          // Upload screenshot to Cloudinary
-          const fd = new FormData();
-          fd.append('file', screenshotFile);
-          fd.append('upload_preset', uploadPreset);
-
-          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-            method: 'POST',
-            body: fd
-          });
-
-          const data = await res.json();
-          if (!data.secure_url) throw new Error('Cloudinary upload failed');
-
-          // ✅ JS code to send proper ISO-format IST time
-          const paymentData = {
-            product_key: productKey,
-            user_email: currentUser.email,
-            upi_ref: upiRef,
-            screenshot_url: data.secure_url,
-            timestamp: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Kolkata" }).replace(' ', 'T'), // ✅ IST in ISO format
-            status: "submitted",
-            seller_name: document.getElementById('sellerName').value,
-            seller_mobile: document.getElementById('sellerMobile').value
-          };
-
-          // 1. ✅ Save payment info to Firebase
-          await push(ref(db, 'seller_payments'), paymentData);
-          console.log("✅ Payment saved to Firebase!");
-
-
-          alert("✅ Payment proof submitted ");
-          document.getElementById('paymentPromptModal').remove();
-          paymentProofForm.reset();
-        } catch (err) {
-          console.error("❌ Error submitting payment proof:", err);
-          alert("❌ Error: " + err.message);
-        } finally {
-          if (spinner) spinner.style.display = 'none';
-        }
-      });
-    }
-
-    alert("✅ Product submitted successfully! Please complete the payment to list your product.");
+    alert("✅ Product submitted successfully! Your product is now listed.");
     form.reset();
   } catch (err) {
     console.error("❌ Error submitting product:", err);
@@ -541,6 +541,8 @@ form.addEventListener('submit', async e => {
     spinner.style.display = 'none';
   }
 });
+
+
 
 // --- FILTER & SORT LOGIC ---
 const filterBtn = document.getElementById('filterBtn');
@@ -846,6 +848,7 @@ document.getElementById("enableNotifyFab").onclick = function() {
 document.getElementById("closeNotifyHelp").onclick = function() {
   document.getElementById("notifyHelpPopup").style.display = "none";
 };
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("firebase-messaging-sw.js", { scope: "./" })
