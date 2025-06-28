@@ -16,7 +16,7 @@ messaging.onBackgroundMessage(function(payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/ekd-logo.png'
+   icon: 'ekd-logo.png' 
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
