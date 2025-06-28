@@ -1,0 +1,134 @@
+<!-- Modern Responsive Footer -->
+  <footer class="footer-modern">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="ekd-logo.png" alt="CampusMart Logo" />
+        <h2>CampusMart</h2>
+        <p style="color:#bbb;max-width:220px;font-size:1rem;line-height:1.5;">Your trusted campus marketplace for
+          buying and selling essentials, gadgets, books, and more.</p>
+      </div>
+      <div class="footer-links">
+        <!-- Footer-related Sections (hidden by default) -->
+        <section id="faqSection" class="footer-info-section" style="display: none;">
+          <h2>Frequently Asked Questions</h2>
+
+          <div style="margin-top: 20px;">
+            <h3 style="color:#555;">❓ How do I buy a product?</h3>
+            <p>Browse the listings, click on the product you want, and click “Proceed to Payment” to secure your
+              purchase.</p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <h3 style="color:#555;">❓ How do I confirm I’ve received my product?</h3>
+            <p>After receiving your product, go to your cart (top right) and click the “Confirm” button for that
+              product.</p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <h3 style="color:#555;">❓ What if I don’t like the product?</h3>
+            <p>If you don’t like the product, we offer a full refund minus a 5% platform fee. Contact our support team
+              to start a return.</p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <h3 style="color:#555;">❓ 🤝 Is it possible to negotiate the listing fee?</h3>
+            <p>Yes, if your listing fee exceeds ₹1000, you may professionally discuss a revised amount with the admin.
+            </p>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <h3 style="color:#555;">❓ Can I cancel my order?</h3>
+            <p>Yes, you can cancel within 2 hours of purchase by contacting our support team.</p>
+          </div>
+        </section>
+
+
+        <section id="returnsSection" class="footer-info-section" style="display: none;">
+          <h2>Returns</h2>
+          <p>Return your product within 7 days of delivery for a full refund (minus 5% platform fee).</p>
+        </section>
+
+        <section id="shippingSection" class="footer-info-section" style="display: none;">
+          <h2>Shipping</h2>
+          <p>Shipping takes 3–5 business days. We’ll update you via email!</p>
+        </section>
+
+        <section id="contactSection" class="footer-info-section" style="display: none;">
+          <h2>Contact Us</h2>
+          <p>Call us at 8766880183 or email <strong>campusmart111@gmail.com </strong> for help!</p>
+        </section>
+        <div class="footer-col">
+
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#shopSection">Shop</a></li>
+            <li><a href="#sell">Sell</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#" id="faqLink">FAQ</a></li>
+            <li><a href="#" id="returnsLink">Returns</a></li>
+            <li><a href="#" id="shippingLink">Shipping</a></li>
+            <li><a href="#" id="contactLink">Contact</a></li>
+          </ul>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const links = {
+              faqLink: "faqSection",
+              returnsLink: "returnsSection",
+              shippingLink: "shippingSection",
+              contactLink: "contactSection"
+            };
+
+            Object.entries(links).forEach(([linkId, sectionId]) => {
+              const link = document.getElementById(linkId);
+              const section = document.getElementById(sectionId);
+
+              if (link && section) {
+                link.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  // Hide all sections first
+                  document.querySelectorAll(".footer-info-section").forEach(sec => {
+                    sec.style.display = "none";
+                  });
+                  // Show the selected section
+                  section.style.display = "block";
+                  // Smooth scroll to section
+                  section.scrollIntoView({ behavior: "smooth" });
+                });
+              }
+            });
+          });
+        </script>
+
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy.html" target="_blank">Privacy Policy</a></li>
+            <li><a href="terms.html" target="_blank">Terms of Service</a></li>
+          </ul>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/aditya_taywade123?igsh=MWg2d2l6c2R1amZjZw==" target="_blank"
+              title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/aditya-taywade-b514b4331?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+              target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+<a href="https://whatsapp.com/channel/0029Vb6VSoc3GJOwXYCnfi10" title="WhatsApp Channel" target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      &copy; 2024 CampusMart &mdash; All rights reserved.
+    </div>
+  
+  </footer>

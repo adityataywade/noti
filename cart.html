@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Order</title>
+  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style2.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"/>
+
+  <style>
+    .cart-total {
+  text-align: right;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+}
+
+    .cart-summary {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.remove-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #e60000;
+}
+
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f2f5f7;
+    }
+
+    body.blur::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+
+    .navbar {
+      background: #111;
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      padding: 8px 18px;
+      background: crimson;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #e60033;
+    }
+
+    .cart-container {
+      max-width: 960px;
+      margin: 30px auto;
+      padding: 24px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+
+    .cart-title {
+      font-size: 2rem;
+      margin-bottom: 32px;
+      font-weight: 600;
+      text-align: center;
+      color: #333;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #f9f9f9;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .cart-item:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .cart-item img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .cart-details h3 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      color: #222;
+    }
+
+    .cart-details p {
+      margin: 0;
+      color: #666;
+    }
+
+    .empty-msg {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #888;
+      padding: 60px 20px;
+    }
+
+    @media (max-width: 600px) {
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cart-item img {
+        width: 100%;
+        height: auto;
+      }
+
+      .cart-details {
+        width: 100%;
+      }
+    }
+
+    .undo-snackbar {
+  visibility: hidden;
+  width: 320px;
+  background-color: #222;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 16px 20px;
+  position: fixed;
+  top: 20px; /* 🟢 show from top instead of bottom */
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.undo-snackbar.show {
+  transform: translateX(-50%) translateY(0%);
+  opacity: 1;
+  visibility: visible;
+}
+
+.undo-snackbar button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.undo-snackbar button:hover {
+  background-color: #e60000;
+}
+@keyframes shake {
+  0% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+  25% { transform: translateX(-49%) translateY(0) rotate(1deg); }
+  50% { transform: translateX(-51%) translateY(0) rotate(-1deg); }
+  75% { transform: translateX(-49%) translateY(0) rotate(1deg); }
+  100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+}
+
+.undo-snackbar.attention {
+  animation: shake 0.4s ease;
+}
+.confirm-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.confirm-btn:hover {
+  background-color: #388e3c;
+}
+.confirm-instructions-box {
+  background: #fff8e1;
+  border-left: 5px solid #ffb74d;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+.confirm-instructions-box h3 {
+  margin: 0 0 10px;
+  color: #ff9800;
+  font-size: 1.1rem;
+}
+.confirm-instructions-box p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+.confirm-instructions-box strong {
+  color: #d32f2f;
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2><i class="fa-solid fa-cart-shopping"></i> Your Order</h2>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </div>
+      <div class="confirm-instructions-box">
+  <h3>📦 Important for Buyers</h3>
+  <p>After you receive your product and you’re 100% satisfied, please click the <strong>✅ Confirm Product Received</strong> button.</p>
+  <p><strong>❌ Do not click this button before getting your product physically.</strong></p>
+</div>
+
+
+  <div class="cart-container" id="cartContainer">
+
+
+    <div class="cart-title">Your Purchase Basket</div>
+    
+    <!-- Items will be injected here -->
+  </div>
+
+  <!-- Remove all product -->
+  <!-- <button id="removeAllBtn" class="remove-btn" style="background-color: #ff6600; margin-top: 16px;">
+  🗑️ Remove All Products
+</button> -->
+
+  <div id="undoSnackbar" class="undo-snackbar">
+    <span>Item removed.</span>
+    <button id="undoBtn">Undo</button>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbDaEt1ACIRNyC4QerqZQhTO8VJuNoWfE",
+      authDomain: "marketplace-378f6.firebaseapp.com",
+      databaseURL: "https://marketplace-378f6-default-rtdb.firebaseio.com",
+      projectId: "marketplace-378f6",
+      storageBucket: "marketplace-378f6.appspot.com",
+      messagingSenderId: "519512596002",
+      appId: "1:519512596002:web:b4cd5978ffa111ef55b47b",
+      measurementId: "G-7XT82KHEGS"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const container = document.getElementById("cartContainer");
+  
+    // Undo Snackbar elements
+    const snackbar = document.getElementById("undoSnackbar");
+    const undoBtn = document.getElementById("undoBtn");
+    let lastRemovedProduct = null;
+    let lastRemovedKey = null;
+    let undoTimeout = null;
+  
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        alert("Please login to view your cart.");
+        window.location.href = "index.html";
+        return;
+      }
+  
+
+      
+      const cartRef = ref(db, `carts/${user.uid}`);
+      onValue(cartRef, snapshot => {
+        const data = snapshot.val();
+        container.innerHTML = '<div class="cart-title">Your Purchase Basket</div>';
+  
+        if (!data) {
+          container.innerHTML += `<p class="empty-msg">🛒 You haven’t purchased any items yet..</p>`;
+          return;
+        }
+  
+        let totalPrice = 0;
+  
+        Object.entries(data).forEach(([key, product]) => {
+          const item = document.createElement("div");
+          item.className = "cart-item";
+         item.innerHTML = `
+  <img src="${product.image_url}" alt="${product.product_name}">
+  <div class="cart-details">
+    <h3>${product.product_name}</h3>
+    <p><strong>Price:</strong> ₹${product.price}</p>
+    <p><strong>Category:</strong> ${product.category}</p>
+    <button class="remove-btn" data-key="${key}">Remove</button>
+    <button class="confirm-btn" data-key="${key}">✅ Confirm Product Received</button>
+  </div>
+`;
+
+          container.appendChild(item);
+  
+          // Remove button with Undo
+          item.querySelector(".remove-btn").onclick = () => {
+            lastRemovedKey = key;
+            lastRemovedProduct = product;
+  
+            remove(ref(db, `carts/${user.uid}/${key}`))
+              .then(() => {
+                showUndoSnackbar();
+              })
+              .catch(err => alert("❌ Failed to remove: " + err.message));
+          };
+          // Add event listener for the new Confirm button
+item.querySelector(".confirm-btn").onclick = () => {
+  // ✅ Save confirmation status in the database
+  const user = auth.currentUser;
+  const orderRef = ref(db, `carts/${user.uid}/${key}`);
+  set(orderRef, {
+    ...product,
+    buyerConfirmed: true
+  })
+  .then(() => {
+    alert("✅ Thank you! We’ve recorded that you received this product. The seller will be paid soon.");
+  })
+  .catch(err => alert("❌ Failed to confirm: " + err.message));
+};
+
+  
+          totalPrice += Number(product.price);
+        });
+  
+        // Total display
+        const summary = document.createElement("div");
+        summary.className = "cart-summary";
+        summary.innerHTML = `<h3>Total: ₹${totalPrice}</h3>`;
+        container.appendChild(summary);
+      });
+    });
+  
+    function showUndoSnackbar() {
+  snackbar.classList.add("show", "attention");
+  document.body.classList.add("blur");  // Optional blur effect
+  undoBtn.focus();                      // Auto focus
+
+  // Remove animation class after it plays
+  setTimeout(() => {
+    snackbar.classList.remove("attention");
+  }, 500);
+
+  // Hide after 5 seconds
+  clearTimeout(undoTimeout);
+  undoTimeout = setTimeout(() => {
+    snackbar.classList.remove("show");
+    document.body.classList.remove("blur");
+    lastRemovedKey = null;
+    lastRemovedProduct = null;
+  }, 5000);
+}
+
+
+    undoBtn.onclick = () => {
+      const user = auth.currentUser;
+      if (user && lastRemovedKey && lastRemovedProduct) {
+        set(ref(db, `carts/${user.uid}/${lastRemovedKey}`), lastRemovedProduct)
+          .then(() => {
+            snackbar.classList.remove("show");
+            lastRemovedKey = null;
+            lastRemovedProduct = null;
+          });
+      }
+    };
+  
+    document.getElementById('logoutBtn').onclick = () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
+
+
+
+
+    // Remove All Products button functionality
+    // Remove all products button
+document.getElementById('removeAllBtn').onclick = () => {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Please login to remove products.");
+    return;
+  }
+
+  if (confirm("Are you sure you want to remove all products from your cart?")) {
+    const cartRef = ref(db, `carts/${user.uid}`);
+    remove(cartRef)
+      .then(() => {
+        alert("🗑️ All products removed from your cart!");
+      })
+      .catch(err => {
+        console.error("❌ Failed to remove all products:", err);
+        alert("❌ Could not remove all products. Try again!");
+      });
+  }
+};
+
+  </script>
+  <div id="footer-container"></div>
+<script>
+// Example for dynamic footer loading
+fetch('footer.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('footer-container').innerHTML = html;
+    // Re-run the script after footer is loaded
+    const links = {
+      faqLink: "faqSection",
+      returnsLink: "returnsSection",
+      shippingLink: "shippingSection",
+      contactLink: "contactSection"
+    };
+
+    Object.entries(links).forEach(([linkId, sectionId]) => {
+      const link = document.getElementById(linkId);
+      const section = document.getElementById(sectionId);
+
+      if (link && section) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          document.querySelectorAll(".footer-info-section").forEach(sec => {
+            sec.style.display = "none";
+          });
+          section.style.display = "block";
+          section.scrollIntoView({ behavior: "smooth" });
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

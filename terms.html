@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style2.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  .policy-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .policy-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #232526;
+    margin-bottom: 20px;
+  }
+  .policy-container h3 {
+    color: #444;
+    font-size: 1.2rem;
+    margin: 20px 0 10px;
+  }
+  .policy-container p, 
+  .policy-container ul {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+  }
+  .policy-container ul {
+    padding-left: 20px;
+  }
+  .policy-container ul li {
+    margin-bottom: 8px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<div class="policy-container">
+  <h2>Terms & Conditions</h2>
+  <p><strong>Effective Date:</strong> June 10, 2025</p>
+
+  <h3>1. Introduction</h3>
+  <p>Welcome to CampusMart. By accessing our website and using our services, you agree to these Terms & Conditions.</p>
+
+  <h3>2. User Accounts</h3>
+  <ul>
+    <li>You must provide accurate information during registration.</li>
+    <li>You’re responsible for maintaining the security of your account.</li>
+  </ul>
+
+  <h3>3. Product Listings & Purchases</h3>
+  <ul>
+    <li>All product details should be accurate and honest.</li>
+    <li>We reserve the right to remove any listing that violates our policies.</li>
+  </ul>
+
+  <h3>4. Payments & Refunds</h3>
+  <ul>
+    <li>Payments are processed securely through our platform.</li>
+    <li>Refunds (minus 5% platform fee) are provided if you’re not satisfied after receiving your product.</li>
+  </ul>
+
+  <h3>5. User Conduct</h3>
+  <ul>
+    <li>You agree not to misuse or abuse our services.</li>
+    <li>Any fraudulent activity may result in account suspension.</li>
+  </ul>
+
+  <h3>6. Limitation of Liability</h3>
+  <p>We’re not liable for any indirect damages arising from using our platform. Use our services at your own risk.</p>
+
+  <h3>7. Changes to Terms</h3>
+  <p>We may update these Terms. Continued use of our platform means you accept the updated Terms.</p>
+
+  <h3>8. Contact Us</h3>
+  <p>If you have any questions, please contact our support at <strong>8766880183</strong>.</p>
+
+  <a href="index.html" class="back-link">← Back to Home</a>
+</div>
+<div id="footer-container"></div>
+<script>
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(data => {
+      const container = document.getElementById("footer-container");
+      if (container) container.innerHTML = data;
+      if (typeof loadFooterReviews === "function") {
+        loadFooterReviews();
+      }
+    });
+</script>
+
+</body>
+</html>

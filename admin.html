@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusMart Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(-45deg, #ff6ec4, #7873f5, #3bf0e4, #ffd86f);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      margin: 0;
+      color: #222;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .admin-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(120, 115, 245, 0.10), 0 2px 8px rgba(0,0,0,0.04);
+      padding: 32px 24px;
+    }
+    .admin-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      text-align: center;
+      color: #3b3b3b;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: #f3f3f3;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #555;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active {
+      background: #ffd86f;
+      color: #222;
+      box-shadow: 0 -2px 8px #ffd86f44;
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .search-bar {
+      margin-bottom: 18px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-bar input, .search-bar select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #f8f8ff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .admin-table th, .admin-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+      font-size: 0.98rem;
+    }
+    .admin-table th {
+      background: #f3f3f3;
+      font-weight: 700;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+    .status {
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      display: inline-block;
+    }
+    .status.pending { background: #ffe082; color: #b26a00; }
+    .status.confirmed { background: #c8e6c9; color: #256029; }
+    .status.submitted { background: #b3e5fc; color: #01579b; }
+    .status.rejected { background: #ffcdd2; color: #b71c1c; }
+    .proof-link {
+      color: #007bff;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .proof-link:hover { color: #0056b3; }
+    .admin-table td img {
+      max-width: 60px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .logout-btn {
+      background: #e53935;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      float: right;
+      margin-top: -40px;
+      margin-bottom: 10px;
+    }
+    .logout-btn:hover { background: #b71c1c; }
+    .auth-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .auth-box input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .auth-box button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .auth-box button:hover { background: #0056b3; }
+    .auth-status {
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    @media (max-width: 900px) {
+      .admin-container { padding: 12px 2vw; }
+      .admin-title { font-size: 1.3rem; }
+      .tab-btn { font-size: 1rem; padding: 10px 10px; }
+      .admin-table th, .admin-table td { font-size: 0.9rem; }
+    }
+    @media (max-width: 600px) {
+      .admin-table th, .admin-table td { padding: 7px 4px; }
+      .tab-btn { font-size: 0.95rem; }
+      .logout-btn { float: none; margin: 0 auto 10px auto; display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-title">
+      CampusMart Admin Panel
+      <button id="logoutBtn" class="logout-btn" style="display:none;">Logout</button>
+    </div>
+    <div class="auth-box" id="authBox">
+      <input id="adminEmail" type="email" placeholder="Admin Email" />
+      <input id="adminPass" type="password" placeholder="Password" />
+      <button id="adminLoginBtn">Login</button>
+      <span id="authStatus" class="auth-status"></span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="paymentsTab">Payments</button>
+      <button class="tab-btn" data-tab="buyersTab">Buyers</button>
+      <button class="tab-btn" data-tab="proofsTab">Proof Submissions</button>
+      <button class="tab-btn" data-tab="productsTab">Products</button>
+    </div>
+    <!-- Payments Tab -->
+    <div id="paymentsTab" class="tab-content active">
+      <div class="search-bar">
+        <input type="text" id="paymentsSearch" placeholder="Search by buyer, email, product, status...">
+        <select id="paymentsStatusFilter">
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="submitted">Submitted</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table" id="paymentsTable">
+          <thead>
+            <tr>
+              <th>Buyer Name</th>
+              <th>Email</th>
+              <th>Product</th>
+              <th>Amount</th>
+              <th>UPI Ref</th>
+              <th>Proof</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Buyers Tab -->
+    <div id="buyersTab" class="tab-content">
+      <div class="search-bar">
+        <input type="text" id="buyersSearch" placeholder="Search by buyer, email, product, status...">
+        <select id="buyersStatusFilter">
+          <option value="">All Status</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="not_confirmed">Not Confirmed</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table" id="buyersTable">
+          <thead>
+            <tr>
+              <th>Buyer Name</th>
+              <th>Email</th>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Proof Submissions Tab -->
+    <div id="proofsTab" class="tab-content">
+      <div class="search-bar">
+        <input type="text" id="proofsSearch" placeholder="Search by email, UPI ID...">
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table" id="proofsTable">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>UPI Ref</th>
+              <th>Screenshot</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Products Tab -->
+    <div id="productsTab" class="tab-content">
+      <div class="search-bar">
+        <input type="text" id="productsSearch" placeholder="Search by product, seller, category...">
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table" id="productsTable">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Description</th>
+              <th>Image</th>
+              <th>Seller Name</th>
+              <th>Seller Mobile</th>
+              <th>Submitted By</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+
+
+  
+  <script type="module">
+    import { firebaseConfig } from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import {
+      getDatabase, ref, onValue
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import {
+      getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+    // Firebase Init
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Tab logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      };
+    });
+
+    // Auth logic
+    const adminLoginBtn = document.getElementById('adminLoginBtn');
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPass = document.getElementById('adminPass');
+    const authStatus = document.getElementById('authStatus');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const authBox = document.getElementById('authBox');
+
+    adminLoginBtn.onclick = async () => {
+      try {
+        await signInWithEmailAndPassword(auth, adminEmail.value, adminPass.value);
+        authStatus.textContent = "Logged in!";
+        authStatus.style.color = "#388e3c";
+      } catch (e) {
+        authStatus.textContent = "Login failed";
+        authStatus.style.color = "#e53935";
+      }
+    };
+    logoutBtn.onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        authBox.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        loadAllData();
+      } else {
+        authBox.style.display = "flex";
+        logoutBtn.style.display = "none";
+        clearAllTables();
+      }
+    });
+
+    // --- Data Loading ---
+    function loadAllData() {
+      loadPayments();
+      loadBuyers();
+      loadProofs();
+      loadProducts();
+    }
+    function clearAllTables() {
+      document.querySelectorAll('tbody').forEach(tb => tb.innerHTML = "");
+    }
+
+    // --- Payments Table ---
+    function loadPayments() {
+      const tableBody = document.querySelector("#paymentsTable tbody");
+      onValue(ref(db, 'payments'), snap => {
+        let rows = [];
+        snap.forEach(child => {
+          const p = child.val();
+          rows.push({
+            buyer_name: p.buyer_name || p.name || "Unknown",
+            buyer_email: p.buyer_email || p.email || "-",
+            product: p.productName || "-",
+            amount: p.amount || "-",
+            payId: p.payId || "-",
+            proofUrl: p.proofUrl || "",
+            status: (p.status || "pending").toLowerCase(),
+            date: p.timestamp ? new Date(p.timestamp).toLocaleString() : "-"
+          });
+        });
+        renderTable(tableBody, rows, "payments");
+      });
+    }
+
+    // --- Buyers Table ---
+    function loadBuyers() {
+      const tableBody = document.querySelector("#buyersTable tbody");
+      onValue(ref(db, 'carts'), snap => {
+        let rows = [];
+        snap.forEach(userSnap => {
+          const userCart = userSnap.val();
+          Object.values(userCart).forEach(prod => {
+            rows.push({
+              buyer_name: prod.buyer_name || "Unknown",
+              buyer_email: prod.buyer_email || "-",
+              product: prod.product_name || prod.productName || "-",
+              price: prod.price || "-",
+              category: prod.category || "-",
+              status: prod.buyerConfirmed ? "confirmed" : "not_confirmed",
+              date: prod.timestamp ? new Date(prod.timestamp).toLocaleString() : "-"
+            });
+          });
+        });
+        renderTable(tableBody, rows, "buyers");
+      });
+    }
+
+    // --- Proof Submissions Table ---
+    function loadProofs() {
+      const tableBody = document.querySelector("#proofsTable tbody");
+      onValue(ref(db, 'proof_submissions'), snap => {
+        let rows = [];
+        snap.forEach(child => {
+          const p = child.val();
+          rows.push({
+            email: p.user_email || "-",
+            upi_id: p.upi_id || "-",
+            screenshot_url: p.screenshot_url || "",
+            date: p.timestamp ? new Date(p.timestamp).toLocaleString() : "-"
+          });
+        });
+        renderTable(tableBody, rows, "proofs");
+      });
+    }
+
+    // --- Products Table ---
+    function loadProducts() {
+      const tableBody = document.querySelector("#productsTable tbody");
+      onValue(ref(db, 'products'), snap => {
+        let rows = [];
+        snap.forEach(child => {
+          const p = child.val();
+          rows.push({
+            product_name: p.product_name || "-",
+            category: p.category || "-",
+            price: p.price || "-",
+            description: p.description || "-",
+            image_url: p.image_url || "",
+            seller_name: p.seller_name || "-",
+            seller_mobile: p.seller_mobile || "-",
+            submitted_by: p.submitted_by || "-"
+          });
+        });
+        renderTable(tableBody, rows, "products");
+      });
+    }
+
+    // --- Table Rendering & Filtering ---
+    function renderTable(tbody, rows, type) {
+      // Filtering
+      let searchVal = "";
+      let statusVal = "";
+      if (type === "payments") {
+        searchVal = document.getElementById("paymentsSearch").value.toLowerCase();
+        statusVal = document.getElementById("paymentsStatusFilter").value;
+      } else if (type === "buyers") {
+        searchVal = document.getElementById("buyersSearch").value.toLowerCase();
+        statusVal = document.getElementById("buyersStatusFilter").value;
+      } else if (type === "proofs") {
+        searchVal = document.getElementById("proofsSearch").value.toLowerCase();
+      } else if (type === "products") {
+        searchVal = document.getElementById("productsSearch").value.toLowerCase();
+      }
+      let filtered = rows.filter(row => {
+        let match = true;
+        if (searchVal) {
+          match = Object.values(row).some(val => (val + "").toLowerCase().includes(searchVal));
+        }
+        if (match && statusVal) {
+          if (type === "buyers") {
+            match = row.status === statusVal;
+          } else if (type === "payments") {
+            match = row.status === statusVal;
+          }
+        }
+        return match;
+      });
+
+      // Sort by date desc
+      filtered.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+
+      // Render
+      tbody.innerHTML = "";
+      if (type === "payments") {
+        filtered.forEach(r => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${r.buyer_name}</td>
+              <td>${r.buyer_email}</td>
+              <td>${r.product}</td>
+              <td>₹${r.amount}</td>
+              <td>${r.payId}</td>
+              <td>${r.proofUrl ? `<a href="${r.proofUrl}" class="proof-link" target="_blank">View</a>` : "N/A"}</td>
+              <td><span class="status ${r.status}">${capitalize(r.status)}</span></td>
+              <td>${r.date}</td>
+            </tr>
+          `;
+        });
+      } else if (type === "buyers") {
+        filtered.forEach(r => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${r.buyer_name}</td>
+              <td>${r.buyer_email}</td>
+              <td>${r.product}</td>
+              <td>₹${r.price}</td>
+              <td>${r.category}</td>
+              <td><span class="status ${r.status}">${capitalize(r.status.replace("_", " "))}</span></td>
+              <td>${r.date}</td>
+            </tr>
+          `;
+        });
+      } else if (type === "proofs") {
+        filtered.forEach(r => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${r.email}</td>
+              <td>${r.upi_id}</td>
+              <td>${r.screenshot_url ? `<a href="${r.screenshot_url}" class="proof-link" target="_blank">View</a>` : "N/A"}</td>
+              <td>${r.date}</td>
+            </tr>
+          `;
+        });
+      } else if (type === "products") {
+        tbody.innerHTML = "";
+        filtered.forEach(r => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${r.product_name}</td>
+              <td>${r.category}</td>
+              <td>₹${r.price}</td>
+              <td>${r.description}</td>
+              <td>${r.image_url ? `<img src="${r.image_url}" style="max-width:60px;max-height:60px;border-radius:6px;">` : "N/A"}</td>
+              <td>${r.seller_name}</td>
+              <td>${r.seller_mobile}</td>
+              <td>${r.submitted_by}</td>
+            </tr>
+          `;
+        });
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#888;">No products found.</td></tr>`;
+        }
+        return;
+      }
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#888;">No records found.</td></tr>`;
+      }
+    }
+
+    // --- Filtering Events ---
+    document.getElementById("paymentsSearch").oninput = () => loadPayments();
+    document.getElementById("paymentsStatusFilter").onchange = () => loadPayments();
+    document.getElementById("buyersSearch").oninput = () => loadBuyers();
+    document.getElementById("buyersStatusFilter").onchange = () => loadBuyers();
+    document.getElementById("proofsSearch").oninput = () => loadProofs();
+    document.getElementById("productsSearch").oninput = () => loadProducts();
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+
+  </script>
+</body>
+</html>

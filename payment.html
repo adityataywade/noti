@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Payment - CampusMart</title>
+<link rel="stylesheet" href="style.css?v=1">
+  <!-- ✅ Custom CSS -->
+  <link rel="stylesheet" href="style2.css" />
+  <!-- ...existing code... -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- ...existing code... -->
+  <!-- ✅ Font Awesome (no integrity issue) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" />
+
+  <!-- ✅ Google Fonts (Poppins) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+
+
+<body>
+
+   <header id="navbar-container">
+    <nav class="market-navbar">
+      <div class="market-navbar__container">
+        <div class="market-navbar__logo" onclick="window.location.href='index.html'">
+          <img src="ekd-logo.png" alt="CampusMart Logo" class="market-navbar__logo-img" />
+          <span class="market-navbar__brand">CampusMart</span>
+        </div>
+        <div class="market-navbar__searchbar" id="marketNavbarSearchbar">
+
+          <select class="market-navbar__select" id="categoryFilter" aria-label="Category">
+            <option value="All">All</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Calculators">Calculators</option>
+            <option value="Stationery">Stationery</option>
+            <option value="Laptops">Laptops</option>
+            <option value="Smartphones">Smartphones</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Beauty">Beauty</option>
+            <option value="Pets">Pets</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Home Essentials">Home Essentials</option>
+            <option value="Art & Craft">Art & Craft</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Sports">Sports</option>
+            <option value="Music">Music</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Toys">Toys</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="market-navbar__search-wrapper">
+            <input type="text" class="market-navbar__search" id="searchInput" placeholder="Search products..."
+              aria-label="Search products">
+          </div>
+        </div>
+        <ul class="market-navbar__links" id="marketNavbarLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#shopSection">Shop</a></li>
+          <li><a href="#sell">Sell</a></li>
+        </ul>
+        <div class="market-navbar__actions">
+          <!-- My Orders Button -->
+          <button class="yellow-glass-btn" onclick="window.location.href='cart.html'" title="My Orders">
+            <i class="fa-solid fa-cart-shopping"></i> My Orders
+          </button>
+
+          <!-- User Email -->
+          <span id="userEmail" class="navbar-user-email" style="display: none;"></span>
+
+          <!-- Login Button -->
+          <button id="navbarLoginBtn" class="yellow-glass-btn" style="display: none;">
+            <i class="fa fa-sign-in-alt"></i> Login
+          </button>
+
+          <!-- Logout Button -->
+          <button id="logoutBtn" class="yellow-glass-btn" style="display: none;">
+            <i class="fa fa-sign-out-alt"></i> Logout
+          </button>
+
+          <!-- Install App Button -->
+          <button id="installBtn" class="market-navbar__btn install-btn">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+
+          <!-- reCAPTCHA -->
+          <div id="recaptcha-container"></div>
+        </div>
+
+        <button class="market-navbar__hamburger" id="marketNavbarHamburger" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <div id="mobileTray" class="mobile-tray">
+
+    <button class="tray-close-btn" id="closeTrayBtn">&times;</button>
+    <div class="tray-section" id="trayUserId">Your ID: <span id="trayUserEmail">Not logged in</span></div>
+    <!-- This goes inside your mobile drawer or menu -->
+    <button id="mobileInstallBtn" class="market-navbar__btn install-btn" style="display: none;">
+      <i class="fa-solid fa-download"></i> Install App
+    </button>
+    <!-- <button id="mobileInstallBtn" style="display: none;">Install App</button> -->
+    <button class="yellow-glass-btn" id="myOrdersBtn" style="display:none;">My Orders</button>
+    <button class="tray-btn" id="trayAdminBtn"><i class="fa fa-user-shield"></i> Admin</button>
+    <button class="tray-btn" id="trayLoginBtn"><i class="fa fa-sign-in-alt"></i> Login</button>
+    <button class="tray-btn" id="trayLogoutBtn" style="display:none;"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    <button class="tray-btn" id="trayCartBtn"><i class="fa fa-cart-shopping"></i> My Cart</button>
+  </div>
+  <!-- 🌟 Review Modal -->
+  <div id="reviewPopup" class="review-popup">
+    <div class="review-content">
+      <span class="close-review" onclick="closeReviewPopup()">&times;</span>
+      <h2>Share Your Experience 📢</h2>
+      <textarea id="userReview" placeholder="Write your feedback here..."></textarea>
+
+      <!-- ⭐ Star Rating -->
+      <div id="starRating" class="star-rating">
+        <span class="star" data-value="1">★</span>
+        <span class="star" data-value="2">★</span>
+        <span class="star" data-value="3">★</span>
+        <span class="star" data-value="4">★</span>
+        <span class="star" data-value="5">★</span>
+      </div>
+
+      <button onclick="submitReview()" class="submit-review-btn">Submit Review</button>
+    </div>
+  </div>
+
+  <div class="payment-container">
+    <div class="product-details">
+      <div class="product-image" id="productImage"></div>
+      <div class="product-info">
+        <h2 id="productName">Product Name</h2>
+        <p id="productDescription">Product description...</p>
+        <p><strong>Category:</strong> <span id="productCategory"></span></p>
+        <p><strong>Price:</strong> ₹<span id="productPrice"></span></p>
+        <div class="payment-section">
+          <button class="pay-btn-modern" onclick="showPaymentPopup()">
+            <i class="fas fa-wallet"></i> Proceed to Payment
+          </button>
+          <!-- UPI Button -->
+                     <!-- 🚨 Strong UPI Warning for Mobile -->
+<div class="upi-alert-mobile">
+  <i class="fas fa-exclamation-triangle"></i>
+  <div class="upi-alert-text">
+    <strong>Wait! 🔴</strong> After UPI payment, you <b>MUST</b> submit the form below.<br>
+    <span class="danger-text">No form = No order ✅</span>
+  </div>
+</div>
+
+          <a id="upiPayButton" href="#" class="pay-btn-modern mobile-only">
+            <i class="fas fa-wallet"></i> Pay via UPI App
+          </a>
+
+        </div>
+      </div>
+      <div class="upi-proof-box glassy-box">
+        <h3>💸 Submit UPI Payment Proof</h3>
+        <p class="instructions">
+          After completing your payment <strong> Via UPI App </strong>, please enter your <strong>UPI Reference ID</strong> and upload the
+          <strong>payment screenshot</strong> as proof.
+        </p>
+
+        <input type="text" id="manualPaymentId" placeholder="Enter your UPI Reference ID" class="glass-input" />
+
+        <input type="file" id="paymentProofScreenshot" accept="image/*" class="glass-file" />
+
+        <button onclick="submitUPIPayment()" class="glass-button" id="manualSubmitBtn">
+          <span class="submit-text"><i class="fas fa-paper-plane"></i> Submit Payment</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <a href="index.html" class="back-btn">← Back to Home</a>
+    <div id="contactNoteBox"
+      style="display:none; margin-top: 20px; padding: 15px; background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 5px;">
+      <strong>Note:</strong> if any quries please contact on this number <strong>8766880183</strong>.
+    </div>
+  </div>
+  <section class="attention-guide">
+    <h2><span class="icon">🔰</span> Smooth & Safe Buying Process</h2>
+
+    <div class="attention-cards">
+      <div class="attention-card">
+        <span class="attention-icon">🛒</span>
+        <h3>1. Browse & Select</h3>
+        <p>Look through the available products and pick your favorite.</p>
+      </div>
+
+      <div class="attention-card">
+        <span class="attention-icon">💳</span>
+        <h3>2. Payment & UPI Reference</h3>
+        <p>Click <strong>Proceed to Payment</strong> and <span class="highlight">send your UPI Reference ID</span>
+          <strong>(compulsory)</strong>.
+        </p>
+      </div>
+
+      <div class="attention-card">
+        <span class="attention-icon">✅</span>
+        <h3>3. Confirmation & Email</h3>
+        <p>You’ll get a <strong>confirmation email</strong> with product details and next steps.</p>
+      </div>
+
+      <div class="attention-card highlight-card">
+        <span class="attention-icon">🛡️</span>
+        <h3>4. 100% Money Safety</h3>
+        <p>Your money is <strong>100% safe</strong>. If you don’t like the product after seeing it, <strong>you get a
+            refund (minus 2% platform fee)</strong>.</p>
+      </div>
+
+      <div class="attention-card">
+        <span class="attention-icon">🔔</span>
+        <h3>5. Stay Updated</h3>
+        <p>Always <strong>check your email</strong> for updates on delivery & next steps.</p>
+      </div>
+
+      <div class="attention-card">
+        <span class="attention-icon">💬</span>
+        <h3>6. Bargain & Inform</h3>
+        <p>If you bargain, <strong>inform us immediately</strong> by phone or message for smooth processing.</p>
+      </div>
+
+      <div class="attention-card">
+        <span class="attention-icon">📦</span>
+        <h3>7. Check Your Cart & Confirm</h3>
+        <p>After payment, <strong>click the cart icon 🛒</strong> at the top right to see your product. Once you receive
+          it, please <strong>click the "Confirm Product Received" button</strong> in the cart to complete the process.
+        </p>
+      </div>
+    </div>
+  </section>
+  <!-- Email -->
+
+  <!-- QR Code Popup -->
+  <div id="qrPopup" class="qr-popup-modern glass-popup">
+    <div class="qr-content-modern light-glass">
+      <span class="close-btn-modern" onclick="closePaymentPopup()">&times;</span>
+      <h2 class="popup-heading">Scan & Pay</h2>
+      <img src="payment.jpg" alt="QR Code" class="qr-img-modern" />
+      <p class="upi-id-modern">UPI ID: <strong>dipaktaywade3@okaxis</strong></p>
+      <h3 class="popup-subheading">After Payment, Submit Proof</h3>
+      <input type="text" id="popupPaymentId" placeholder="Enter UPI Reference ID" class="glass-input" />
+      <input type="file" id="popupPaymentScreenshot" accept="image/*" class="glass-file" />
+      <button onclick="sendPaymentId()" class="glass-button send-id-btn">
+
+        <i class="fas fa-paper-plane"></i> Submit Payment
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Success Animation Popup -->
+  <div id="successPopup" class="success-popup">
+    <!-- <button id="adminConfirmBtn" style="display:none;" onclick="adminConfirmPayment()">✅ Confirm Payment</button> -->
+    <div class="checkmark-wrapper">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
+      </svg>
+      <p class="success-message">Payment Successful!</p>
+    </div>
+  </div>
+  <!-- ✅ Local Audio File (instead of blocked pixabay link) -->
+  <audio id="successSound" src="assets/audio/success.mp3" preload="auto"></audio>
+
+  <!-- 🎉 Confetti Effect -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    function handlePaymentSuccess() {
+      // ✅ Close QR popup
+      document.getElementById("qrPopup").style.display = "none";
+
+      // ✅ Show success animation
+      document.getElementById("successPopup").style.display = "flex";
+
+      // ✅ Play sound
+      const sound = document.getElementById("successSound");
+      if (sound) {
+        sound.muted = false;
+        sound.volume = 1.0;
+        sound.play().catch(err => {
+          console.warn("🔇 Autoplay blocked.");
+        });
+      }
+
+      // 🎉 Confetti
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      // 🟢 Optional alert (or remove if not needed)
+      setTimeout(() => {
+        alert("🎉 Payment Successful!");
+        // Optionally hide the popup after a delay:
+        document.getElementById("successPopup").style.display = "none";
+      }, 1500);
+    }
+  </script>
+  <!-- Firebase & Logic -->
+  <script type="module">
+    import emailjs from 'https://esm.sh/@emailjs/browser';
+    emailjs.init("wVTxCgXP-mcJn5IP4"); // <-- Your EmailJS user ID
+
+    import { firebaseConfig } from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import {
+      getDatabase, ref, push
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+    const cloudinaryUpload = async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "your_upload_preset");  // replace with your Cloudinary preset
+      const response = await fetch("https://api.cloudinary.com/v1_1/dobzp321s/image/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      return data.secure_url;
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    let selectedRating = 0;
+
+    function showReviewPopup() {
+      document.getElementById("reviewPopup").style.display = "flex";
+    }
+
+    window.closeReviewPopup = () => {
+      document.getElementById("reviewPopup").style.display = "none";
+    };
+
+    window.submitReview = async () => {
+      const reviewText = document.getElementById("userReview").value.trim();
+      if (!reviewText || selectedRating === 0) {
+        return alert("Please write a review and select a rating.");
+      }
+
+      const user = auth.currentUser;
+      if (!user) return alert("Login required to submit review.");
+
+      const reviewData = {
+        uid: user.uid,
+        name: user.displayName || "Anonymous",
+        email: user.email,
+        message: reviewText,
+        rating: selectedRating,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        await push(ref(db, "reviews"), reviewData);
+        alert("✅ Thanks for your feedback!");
+        closeReviewPopup();
+      } catch (err) {
+        console.error("❌ Review failed", err);
+        alert("Something went wrong. Try again.");
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const stars = document.querySelectorAll(".star");
+      stars.forEach(star => {
+        star.addEventListener("click", () => {
+          selectedRating = parseInt(star.getAttribute("data-value"));
+          stars.forEach(s => s.classList.remove("selected"));
+          for (let i = 0; i < selectedRating; i++) {
+            stars[i].classList.add("selected");
+          }
+        });
+      });
+    });
+
+    window.showPaymentPopup = () => {
+  // Simple mobile check
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+  if (isMobile) {
+    // On mobile, do NOT show the QR popup
+    // Optionally, you can trigger the UPI app button click here if you want:
+    document.getElementById("upiPayButton").click();
+    return;
+  }
+  // On desktop, show the QR popup
+  document.getElementById("qrPopup").style.display = "flex";
+};
+
+    window.closePaymentPopup = () => {
+      document.getElementById("qrPopup").style.display = "none";
+    };
+
+    function sendBuyerEmail(paymentData) {
+      emailjs.send("service_e32z7z5", "template_bd14k2m", {
+        to_email: paymentData.buyer_email,                  // only used internally
+        buyer_name: paymentData.buyer_name,                 // ✅ used in template
+        product_name: paymentData.productName,              // ✅ rename from productName
+        price: paymentData.amount,                          // ✅ rename from amount
+        order_date: new Date().toLocaleString(),            // ✅ matches template
+        seller_name: "CampusMart Seller"                    // ✅ hardcoded or dynamic if available
+      }).then(
+        (response) => console.log("✅ Buyer confirmation sent!", response),
+        (error) => console.error("❌ Buyer confirmation failed:", error)
+      );
+    }
+
+    // Manual Proof Submission Function
+    window.submitUPIPayment = async () => {
+      const upiId = document.getElementById("manualPaymentId").value.trim();
+      const fileInput = document.getElementById("paymentProofScreenshot");
+      const file = fileInput.files[0];
+      const button = document.getElementById("manualSubmitBtn");
+      const originalText = button.innerHTML;
+
+      if (!upiId || !file || !file.type.startsWith("image/")) {
+        alert("❌ Please enter UPI Reference ID and upload a valid screenshot.");
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please login before submitting payment proof.");
+        return;
+      }
+
+      // Show loading
+      button.disabled = true;
+      button.innerHTML = `<span class="submit-text">Submitting <span class="spinner"></span></span>`;
+
+      try {
+        const screenshotUrl = await cloudinaryUpload(file);
+        const proofId = 'proof_' + Date.now();
+
+        const proofData = {
+          user_email: user.email || "unknown",
+          upi_id: upiId,
+          screenshot_url: screenshotUrl,
+          timestamp: new Date().toISOString()
+        };
+
+        await set(ref(db, 'proof_submissions/' + proofId), proofData);
+
+        showProofPopup();
+
+        // Clear inputs
+        document.getElementById("manualPaymentId").value = "";
+        fileInput.value = "";
+      } catch (error) {
+        console.error("❌ Failed to submit proof:", error);
+        alert("❌ Submission failed. Try again.");
+      } finally {
+        button.disabled = false;
+        button.innerHTML = originalText;
+      }
+    };
+
+
+    window.sendPaymentId = async function () {
+      const enteredId = document.getElementById("popupPaymentId").value.trim();
+      const screenshotInput = document.getElementById("popupPaymentScreenshot");
+      const screenshotFile = screenshotInput.files[0];
+      const sendButton = document.querySelector(".send-id-btn");
+
+      if (!enteredId || !screenshotFile || !screenshotFile.type.startsWith("image/")) {
+        alert("❌ Please enter UPI Reference ID and upload a valid payment screenshot.");
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to make a payment.");
+        return;
+      }
+
+      const product = JSON.parse(localStorage.getItem("selectedProduct"));
+      if (!product) {
+        alert("❌ No product found in localStorage.");
+        return;
+      }
+
+      const customPayId = 'pay_' + Date.now();
+      const downloadURL = await cloudinaryUpload(screenshotFile);
+
+      try {
+        sendButton.disabled = true;
+        sendButton.textContent = "Uploading Proof...";
+
+        const paymentData = {
+          userId: user.uid,
+          email: user.email || "",
+          payId: enteredId,
+          name: user.displayName || "anonymous",
+          buyer_name: user.displayName || "anonymous",
+          buyer_email: user.email || "",
+          amount: product.price || "",
+          productId: product.id || "",
+          productName: product.product_name || "",
+          proofUrl: downloadURL,
+          timestamp: new Date().toISOString()
+        };
+
+        console.log("🔥 Submitting payment data:", paymentData);
+
+        await set(ref(db, 'payments/' + customPayId), paymentData);
+
+const cartProduct = {
+  product_name: paymentData.productName,
+  price: paymentData.amount,
+  category: product.category,
+  image_url: product.image_url,
+  productId: paymentData.productId,
+  payId: paymentData.payId,
+  buyerConfirmed: false,
+  timestamp: paymentData.timestamp,
+  // Add these lines:
+  buyer_name: paymentData.buyer_name || paymentData.name || "Unknown",
+  buyer_email: paymentData.buyer_email || paymentData.email || "-"
+};
+await set(ref(db, `carts/${user.uid}/${customPayId}`), cartProduct);
+        // ✅ Notify Admin
+        emailjs.send("service_e32z7z5", "template_1iq1q95", {
+          buyer_name: paymentData.buyer_name,
+          buyer_email: paymentData.buyer_email,
+          productName: paymentData.productName,
+          amount: paymentData.amount,
+          payId: paymentData.payId,
+          proofUrl: paymentData.proofUrl,
+          timestamp: paymentData.timestamp
+        }).then(
+          (response) => console.log("✅ Admin notified!", response),
+          (error) => console.error("❌ Admin notification failed:", error)
+        );
+        console.log("📧 Sending buyer email to:", paymentData.buyer_email);
+
+        // ✅ Notify Buyer
+        sendBuyerEmail(paymentData);
+
+        handlePaymentSuccess();
+
+        document.querySelector(".pay-btn-modern").style.display = "none";
+        const paymentSection = document.querySelector(".payment-section");
+        const successMessage = document.createElement("p");
+        successMessage.textContent = "✅ Payment Successfully Done!";
+        successMessage.style.color = "green";
+        successMessage.style.fontWeight = "bold";
+        paymentSection.appendChild(successMessage);
+      } catch (err) {
+        console.error("❌ Error:", err);
+        alert("❌ Payment failed. Try again.");
+      } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = "Send My Payment ID";
+      }
+    };
+
+    document.getElementById("popupPaymentId").addEventListener("input", toggleButton);
+    document.getElementById("popupPaymentScreenshot").addEventListener("change", toggleButton);
+
+    function toggleButton() {
+      const id = document.getElementById("popupPaymentId").value.trim();
+      const file = document.getElementById("popupPaymentScreenshot").files[0];
+      document.querySelector(".send-id-btn").disabled = !(id && file);
+    }
+
+    window.onload = () => {
+      const product = JSON.parse(localStorage.getItem('selectedProduct'));
+      if (product) {
+        document.getElementById('productName').textContent = product.product_name;
+        document.getElementById('productDescription').textContent = product.description;
+        document.getElementById('productCategory').textContent = product.category;
+        document.getElementById('productPrice').textContent = product.price;
+        document.getElementById('productImage').style.backgroundImage = `url(${product.image_url})`;
+      } else {
+        document.querySelector('.payment-container').innerHTML = '<p style="text-align:center">No product selected.</p>';
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const product = JSON.parse(localStorage.getItem("selectedProduct"));
+      if (!product) {
+        alert("No product found. Redirecting...");
+        window.location.href = "index.html";
+        return;
+      }
+
+      document.getElementById("productName").textContent = product.product_name;
+      document.getElementById("productDescription").textContent = product.description;
+      document.getElementById("productCategory").textContent = product.category;
+      document.getElementById("productPrice").textContent = product.price;
+      document.getElementById("productImage").style.backgroundImage = `url(${product.image_url})`;
+
+      const upiButton = document.getElementById("upiPayButton");
+      upiButton.addEventListener("click", () => {
+        const upiLink = `upi://pay?pa=dipaktaywade3@okaxis&pn=CampusMart&am=${product.price}&cu=INR`;
+        window.location.href = upiLink;
+      });
+    });
+
+
+    window.showProofPopup = () => {
+      document.getElementById("proofSuccessPopup").style.display = "block";
+    };
+
+    window.closeProofPopup = () => {
+      document.getElementById("proofSuccessPopup").style.display = "none";
+    };
+
+    let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+});
+
+document.getElementById("upiPayButton").addEventListener("click", async function (e) {
+  e.preventDefault();
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("⚠️ Please log in to make a payment.");
+    window.location.href = "index.html#loginModal";
+    return;
+  }
+
+  // Get product info from localStorage
+  const product = JSON.parse(localStorage.getItem("selectedProduct"));
+  if (!product) {
+    alert("❌ No product found in localStorage.");
+    return;
+  }
+
+  // Prepare buyer info
+  const buyerInfo = {
+    userId: user.uid,
+    email: user.email,
+    buyer_name: user.displayName || "anonymous",
+    productId: product.id || "",
+    productName: product.product_name || "",
+    price: product.price || "",
+    category: product.category || "",
+    image_url: product.image_url || "",
+    timestamp: new Date().toISOString()
+  };
+
+  // Store in Payviaupi node
+  try {
+    await push(ref(db, "Payviaupi"), buyerInfo);
+    console.log("✅ Buyer info stored in Payviaupi:", buyerInfo);
+  } catch (err) {
+    console.error("❌ Failed to store Payviaupi info:", err);
+  }
+
+  // Continue with your existing logic (e.g., open UPI app)
+  const upiLink = `upi://pay?pa=dipaktaywade3@okaxis&pn=CampusMart&am=${product.price}&cu=INR`;
+  window.location.href = upiLink;
+});
+
+
+  </script>
+
+  <script>
+// Example for dynamic footer loading
+fetch('footer.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('footer-container').innerHTML = html;
+    // Re-run the script after footer is loaded
+    const links = {
+      faqLink: "faqSection",
+      returnsLink: "returnsSection",
+      shippingLink: "shippingSection",
+      contactLink: "contactSection"
+    };
+
+    Object.entries(links).forEach(([linkId, sectionId]) => {
+      const link = document.getElementById(linkId);
+      const section = document.getElementById(sectionId);
+
+      if (link && section) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          document.querySelectorAll(".footer-info-section").forEach(sec => {
+            sec.style.display = "none";
+          });
+          section.style.display = "block";
+          section.scrollIntoView({ behavior: "smooth" });
+        });
+      }
+    });
+  });
+  </script>
+  <div id="footer-container"></div>
+
+  <div id="proofSuccessPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+background: white; border-radius: 10px; padding: 25px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000;">
+    <h3 style="color: green; margin-bottom: 10px;">✅ Proof Submitted!</h3>
+    <p style="font-size: 16px;">Your UPI payment proof has been submitted successfully.</p>
+    <button onclick="closeProofPopup()"
+      style="margin-top: 15px; background: #1a73e8; color: white; border: none; padding: 8px 16px; border-radius: 5px;">OK</button>
+  </div>
+  <script src="index.js" type="module" defer></script>
+</body>
+
+</html>

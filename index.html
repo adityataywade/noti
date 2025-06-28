@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="theme-color" content="#007bff" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusMart</title>
+<link rel="stylesheet" href="style.css?v=1">
+  <!-- <link rel="stylesheet" href="style.css" id="styleSheet"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <link rel="stylesheet" href="style2.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007bff" />
+</head>
+<body>
+  <header id="navbar-container">
+    <nav class="market-navbar">
+      <div class="market-navbar__container">
+        <div class="market-navbar__logo" onclick="window.location.href='index.html'">
+          <img src="ekd-logo.png" alt="CampusMart Logo" class="market-navbar__logo-img" />
+          <span class="market-navbar__brand">CampusMart</span>
+        </div>
+        <div class="market-navbar__searchbar" id="marketNavbarSearchbar">
+
+          <select class="market-navbar__select" id="categoryFilter" aria-label="Category">
+            <option value="All">All</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Calculators">Calculators</option>
+            <option value="Stationery">Stationery</option>
+            <option value="Laptops">Laptops</option>
+            <option value="Smartphones">Smartphones</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Beauty">Beauty</option>
+            <option value="Pets">Pets</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Home Essentials">Home Essentials</option>
+            <option value="Art & Craft">Art & Craft</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Sports">Sports</option>
+            <option value="Music">Music</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Toys">Toys</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="market-navbar__search-wrapper">
+            <input type="text" class="market-navbar__search" id="searchInput" placeholder="Search products..."
+              aria-label="Search products">
+          </div>
+        </div>
+        <ul class="market-navbar__links" id="marketNavbarLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#shopSection">Shop</a></li>
+          <li><a href="#sell">Sell</a></li>
+        </ul>
+        <div class="market-navbar__actions">
+          <!-- My Orders Button -->
+          <button class="yellow-glass-btn" onclick="window.location.href='cart.html'" title="My Orders">
+            <i class="fa-solid fa-cart-shopping"></i> My Orders
+          </button>
+
+          <!-- User Email -->
+          <span id="userEmail" class="navbar-user-email" style="display: none;"></span>
+
+          <!-- Login Button -->
+          <button id="navbarLoginBtn" class="yellow-glass-btn" style="display: none;">
+            <i class="fa fa-sign-in-alt"></i> Login
+          </button>
+
+          <!-- Logout Button -->
+          <button id="logoutBtn" class="yellow-glass-btn" style="display: none;">
+            <i class="fa fa-sign-out-alt"></i> Logout
+          </button>
+
+          <!-- Install App Button -->
+          <button id="installBtn" class="market-navbar__btn install-btn">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+
+          <!-- reCAPTCHA -->
+          <div id="recaptcha-container"></div>
+        </div>
+
+        <button class="market-navbar__hamburger" id="marketNavbarHamburger" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <div id="mobileTray" class="mobile-tray">
+
+    <button class="tray-close-btn" id="closeTrayBtn">&times;</button>
+    <div class="tray-section" id="trayUserId">Your ID: <span id="trayUserEmail">Not logged in</span></div>
+    <!-- This goes inside your mobile drawer or menu -->
+    <button id="mobileInstallBtn" class="market-navbar__btn install-btn" style="display: none;">
+      <i class="fa-solid fa-download"></i> Install App
+    </button>
+    <!-- <button id="mobileInstallBtn" style="display: none;">Install App</button> -->
+    <button class="yellow-glass-btn" id="myOrdersBtn" style="display:none;">My Orders</button>
+    <button class="tray-btn" id="trayAdminBtn"><i class="fa fa-user-shield"></i> Admin</button>
+    <button class="tray-btn" id="trayCartBtn"><i class="fa fa-cart-shopping"></i> My Cart</button>
+    <button class="tray-btn" id="trayLoginBtn"><i class="fa fa-sign-in-alt"></i> Login</button>
+    <button class="tray-btn" id="trayLogoutBtn" style="display:none;"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    <!-- Inside your #mobileTray div -->
+<button id="enableNotifyFab" class="tray-btn" style="display:none;">
+  <i class="fa-solid fa-bell"></i> Enable Notifications
+</button>
+  </div>
+  <section class="hero-section">
+    <!-- Banner -->
+    <div class="demo-banner">
+      🧪 <strong>CampusMart Demo Week!</strong> Try buying demo products like laptops or phones — ₹0 cost.
+      <br>Use Pay ID: <strong>pay_12345678</strong> at checkout!
+      <br>🛑 <strong>Note:</strong> These are <em>demo products only</em>. No real money will be deducted, and
+      <strong>no actual products will be delivered</strong>. This is just for testing the CampusMart shopping
+      experience.
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to CampusMart</h1>
+      <p class="hero-subtitle">Your trusted campus marketplace for buying and selling essentials, gadgets, books, and
+        more.
+      </p>
+      <div class="hero-actions">
+        <a href="#shopSection" class="hero-btn">Shop Now</a>
+        <a href="#sell" class="hero-btn hero-btn-outline">Sell Your Product</a>
+      </div>
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1440 320">
+      <path fill="#f8fafc" fill-opacity="1"
+        d="M0,224L48,202.7C96,181,192,139,288,144C384,149,480,203,576,197.3C672,192,768,128,864,117.3C960,107,1056,149,1152,176C1248,203,1344,213,1392,218.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+      </path>
+    </svg>
+  </section>
+  <div class="main-content">
+    <section class="product-section">
+      <h1 class="available-items-heading">Available Items</h1>
+      <div class="filter-sort-bar">
+        <div class="filter-group">
+          <button id="filterBtn" class="filter-btn">Filter <i class="fa fa-filter"></i></button>
+          <div id="filterDropdown" class="filter-dropdown">
+            <label><input type="checkbox" class="filter-category" value="Electronics"> Electronics</label>
+            <label><input type="checkbox" class="filter-category" value="Books"> Books</label>
+            <label><input type="checkbox" class="filter-category" value="Stationery"> Stationery</label>
+            <label><input type="checkbox" class="filter-category" value="Laptops"> Laptops</label>
+            <label><input type="checkbox" class="filter-category" value="Smartphones"> Smartphones</label>
+            <label><input type="checkbox" class="filter-category" value="Clothing"> Clothing</label>
+            <label><input type="checkbox" class="filter-category" value="Accessories"> Accessories</label>
+            <label><input type="checkbox" class="filter-category" value="Other"> Other</label>
+            <hr>
+            <label>Price Range:</label>
+            <input type="number" id="minPrice" placeholder="Min ₹" style="width:70px;"> -
+            <input type="number" id="maxPrice" placeholder="Max ₹" style="width:70px;">
+            <button id="applyFilterBtn" class="apply-btn">Apply</button>
+          </div>
+        </div>
+        <div class="sort-group">
+          <label for="sortSelect">Sort by:</label>
+          <select id="sortSelect" class="sort-select">
+            <option value="recent">Most Recently Added</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+            <option value="az">Name: A-Z</option>
+            <option value="za">Name: Z-A</option>
+          </select>
+        </div>
+      </div>
+      <!-- Product Cards Section (shop-section) -->
+      <section class="shop-section" id="shopSection">
+      </section>
+      <div id="product-loading-spinner" style="display:none;text-align:center;margin:30px 0;">
+        <i class="fa fa-spinner fa-spin" style="font-size:2.5rem;color:#ffb74d;"></i>
+        <div style="margin-top:10px;color:#888;font-size:1.1rem;">Loading products...</div>
+      </div>
+      <div class="seller-demo-banner">
+        🎯 Want to try CampusMart as a seller? Upload a <strong>demo product</strong> now!<br>
+        <ul>
+          <li>Product Name: <strong>Demo Product</strong></li>
+          <li>Price: ₹0</li>
+          <li>Category: Other</li>
+          <li>Use your real name & mobile</li>
+          <li>No listing charge</li>
+        </ul>
+        <a href="demo_product.png" download class="demo-download-btn">⬇ Download Demo Image</a>
+        <!-- 🔊 AUDIO -->
+        <!-- AUDIO ELEMENT -->
+        <audio id="demoSound" src="demo_intro.mp3" preload="auto"></audio>
+        <script>
+          window.addEventListener('DOMContentLoaded', () => {
+            const demoSound = document.getElementById('demoSound');
+            const popup = document.getElementById('demoWelcomePopup');
+            const gotItButton = popup?.querySelector('button'); // Target the "Got it!" button
+
+            if (!localStorage.getItem('demoPopupShown')) {
+              popup.style.display = 'flex';
+              localStorage.setItem('demoPopupShown', 'true');
+
+              // When user clicks "Got it!", play the sound
+              gotItButton?.addEventListener('click', () => {
+                demoSound.play().then(() => {
+                  console.log("✅ Audio played on 'Got it' click");
+                }).catch((err) => {
+                  console.error("❌ Could not play audio:", err);
+                });
+
+                // Hide popup after click
+                popup.style.display = 'none';
+              });
+            }
+          });
+        </script>
+        <button onclick="autoFillDemoListing()" class="demo-autofill-btn">✨ Create Demo Listing</button>
+      </div>
+      <script>
+        function autoFillDemoListing() {
+          document.getElementById("productName").value = "Demo Product";
+          document.getElementById("productCategory").value = "Other";
+          document.getElementById("productPrice").value = "0";
+          document.getElementById("productDescription").value = "This is a demo product listing. No real listing fees or payment.";
+        }
+      </script>
+      <!-- SELL PRODUCT (separate section) -->
+      <section id="sell" class="sell-section">
+        <div class="sell-container">
+          <h2 class="sell-heading">Sell Your Product</h2>
+          <p class="sell-subtitle">Fill the details below and reach thousands of customers!</p>
+
+          <form id="sellForm" class="sell-form">
+            <div class="form-group">
+              <input type="text" id="productName" placeholder="Product Name" required>
+            </div>
+            <div class="form-group">
+              <select id="productCategory" required>
+                <option value="">Select a category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Books">Books</option>
+                <option value="Calculators">Calculators</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Laptops">Laptops</option>
+                <option value="Smartphones">Smartphones</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Beauty">Beauty</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Art & Craft">Art & Craft</option>
+                <option value="Sports">Sports</option>
+                <option value="Music">Music</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <input type="number" id="productPrice" placeholder="Price (in ₹)" required>
+            </div>
+            <div class="form-group">
+              <textarea id="productDescription" placeholder="Description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+              <input type="file" id="imageFile" accept="image/*" required>
+            </div>
+            <!-- Seller Details -->
+            <div class="form-group">
+              <input type="text" id="sellerName" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <input type="tel" id="sellerMobile" placeholder="Your Mobile Number" required>
+            </div>
+            <!-- Loader -->
+            <div id="loading-spinner" style="display: none;">
+              <p>Submitting...</p>
+            </div>
+            <button type="submit" class="sell-btn">Submit Product</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- instruction -->
+      <div class="seller-instructions-box">
+        <h3>👤 Seller Guidelines</h3>
+        <ul>
+          <li><span class="icon">✅</span> Login & fill out the product form.</li>
+          <li><span class="icon">💰</span> Pay listing fee (first month free!).</li>
+          <li><span class="icon">📧</span> Check your email for listing confirmation.</li>
+          <li><span class="icon">🤝</span> Meet buyer & show the product.</li>
+          <li><span class="icon">❌</span> <strong>Do not take payment directly from the buyer.</strong></li>
+          <li><span class="icon">🔒</span> Buyer’s money is safe & sent to you after their confirmation.</li>
+        </ul>
+      </div>
+      <div id="sellerPaymentStatus" style="display:none; margin-top:20px; font-weight:bold;"></div>
+  </div>
+  <script>
+    // Example for dynamic footer loading
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('footer-container').innerHTML = html;
+        // Re-run the script after footer is loaded
+        const links = {
+          faqLink: "faqSection",
+          returnsLink: "returnsSection",
+          shippingLink: "shippingSection",
+          contactLink: "contactSection"
+        };
+
+        Object.entries(links).forEach(([linkId, sectionId]) => {
+          const link = document.getElementById(linkId);
+          const section = document.getElementById(sectionId);
+
+          if (link && section) {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              document.querySelectorAll(".footer-info-section").forEach(sec => {
+                sec.style.display = "none";
+              });
+              section.style.display = "block";
+              section.scrollIntoView({ behavior: "smooth" });
+            });
+          }
+        });
+      });
+  </script>
+  <div id="footer-container"></div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
+      <h2>Login or Register</h2>
+      <!-- Email Login -->
+      <input type="email" id="authEmail" placeholder="Enter your email">
+      <input type="password" id="authPassword" placeholder="Enter your password">
+      <!-- Google Login -->
+      <button id="googleLoginBtn" class="google-btn"
+        style="display:flex;align-items:center;gap:10px;justify-content:center;width:100%;padding:10px 0;margin:18px 0 10px 0;background:#fff;border:1px solid #ccc;border-radius:6px;cursor:pointer;transition:box-shadow 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+        <svg class="google-icon" width="24" height="24" viewBox="0 0 48 48"
+          style="width:24px;height:24px;display:inline-block;vertical-align:middle;flex-shrink:0;">
+          <g>
+            <path fill="#4285F4"
+              d="M43.6 20.5h-1.9V20H24v8h11.3c-1.5 4-5.2 7-9.3 7-5.5 0-10-4.5-10-10s4.5-10 10-10c2.4 0 4.6 0.9 6.3 2.3l6.1-6.1C34.5 8.1 29.5 6 24 6 13.5 6 5 14.5 5 25s8.5 19 19 19c10.5 0 19-8.5 19-19 0-1.3-0.1-2.7-0.4-4z" />
+            <path fill="#34A853"
+              d="M24 44c5.1 0 9.4-1.7 12.5-4.7l-6.1-5.1c-1.7 1.1-3.8 1.8-6.4 1.8-4.1 0-7.8-2.7-9.1-6.4H8.2v5.3C11.3 40.3 17.2 44 24 44z" />
+            <path fill="#FBBC05"
+              d="M14.9 29.6c-0.4-1.1-0.7-2.3-0.7-3.6s0.3-2.5 0.7-3.6v-5.3H8.2C7.1 19.7 6 22.2 6 25s1.1 5.3 2.2 7.4l6.7-5.8z" />
+            <path fill="#EA4335"
+              d="M24 14.5c2.6 0 4.9 0.9 6.7 2.7l5-5C32.9 9.1 28.7 7 24 7c-6.8 0-12.7 3.7-15.8 9.3l6.7 5.3c1.3-3.7 5-6.4 9.1-6.4z" />
+            <path fill="none" d="M0 0h48v48H0z" />
+          </g>
+        </svg>
+        <span style="font-size:1.05rem;color:#222;font-weight:500;display:inline-block;vertical-align:middle;">Sign in
+          with Google</span>
+      </button>
+      <!-- Buttons -->
+      <div class="btn-group">
+        <button id="loginBtn">Login</button>
+        <button id="registerBtn">Sign Up</button>
+      </div>
+    </div>
+  </div>
+  <div id="adminLoginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="document.getElementById('adminLoginModal').style.display='none'">&times;</span>
+      <h2>Admin Login</h2>
+      <input type="text" id="adminUsername" placeholder="Username">
+      <input type="password" id="adminPassword" placeholder="Password">
+      <button id="adminLoginSubmit" class="admin-btn">Login as Admin</button>
+    </div>
+  </div>
+  <!-- 1st week banner -->
+  <div id="floatingBanner">
+    <div class="banner-content">
+      <span id="headlineText">🎉 <strong>Post your product for FREE</strong> this week — no charges!</span>
+
+      <div class="countdown" id="countdownTimer"></div>
+    </div>
+  </div>
+  <!-- Script: Countdown + Headline Rotator -->
+  <!-- chat bot -->
+  <!-- Modern Floating Chatbot -->
+  <div id="modern-chatbot">
+    <div id="chat-toggle" title="Chat with us">✨</div>
+
+    <div id="chat-window" class="hidden">
+      <div class="chat-header">
+        <span>🧑‍🤖 SmartBot</span>
+        <button id="chat-close">✕</button>
+      </div>
+      <div class="chat-body" id="faq-list">
+        <!-- FAQ Buttons Render Here -->
+      </div>
+    </div>
+  </div>
+  <div id="demoWelcomePopup" class="demo-popup">
+    <div class="demo-popup-content">
+      <h2>🎉 Welcome to CampusMart!</h2>
+      <p>This is a <strong>demo version</strong>. Explore freely — no real payments involved!</p>
+      <button onclick="document.getElementById('demoWelcomePopup').style.display='none'">Got it!</button>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('demoPopupShown')) {
+        const popup = document.getElementById('demoWelcomePopup');
+        if (popup) popup.style.display = 'flex';
+        localStorage.setItem('demoPopupShown', 'true');
+      }
+    });
+  </script>
+  <!-- 1st week banner -->
+
+
+  <!-- ✅ Custom Install App Popup -->
+  <div id="customInstallPrompt" style="
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #232323;
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  max-width: 300px;
+  font-family: 'Segoe UI', sans-serif;
+">
+    <strong style="font-size: 1.1rem;">📲 Install CampusMart App</strong>
+    <p style="margin: 8px 0; font-size: 0.9rem;">
+      Get the app for a faster, cleaner experience!
+    </p>
+    <div style="display: flex; justify-content: flex-start; gap: 10px; margin-top: 10px;">
+      <button id="installNowBtn" style="
+      background: #ffb74d;
+      border: none;
+      color: #232323;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;
+    ">Install</button>
+
+      <button id="dismissInstallBtn" style="
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 0.85rem;
+      cursor: pointer;
+    ">Not now</button>
+    </div>
+  </div>
+
+  <!-- 
+
+  <script>
+  // 🌀 Force CSS to reload every time without clearing cache manually
+  const cssLink = document.getElementById("styleSheet");
+  const now = new Date().getTime();
+  cssLink.href = `style.css?v=${now}`;
+</script> -->
+  <script src="index.js" type="module" defer></script>
+<button id="enableNotifyFab" style="
+  display:none;
+  position:fixed;
+  bottom:32px;
+  right:32px;
+  z-index:9999;
+  background: linear-gradient(135deg, #ffb74d, #ffd86f 80%);
+  color: #232323;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px #0002;
+  padding: 0 26px 0 18px;
+  height: 54px;
+  font-size: 1.15rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s, box-shadow 0.2s;
+">
+  <i class="fa-solid fa-bell"></i>
+  <span>Enable Notifications</span>
+</button>
+
+
+<!-- Notification Help Popup (hidden by default) -->
+<div id="notifyHelpPopup" style="
+  display:none;
+  position:fixed;
+  left:0; top:0; width:100vw; height:100vh;
+  background:rgba(0,0,0,0.5);
+  z-index:10000;
+  justify-content:center;
+  align-items:center;
+">
+  <div style="
+    background:#fff;
+    border-radius:14px;
+    max-width:90vw;
+    width:340px;
+    padding:24px 18px;
+    text-align:center;
+    box-shadow:0 4px 24px #0003;
+    position:relative;
+  ">
+    <button id="closeNotifyHelp" style="
+      position:absolute;top:8px;right:12px;
+      background:none;border:none;font-size:1.5rem;cursor:pointer;color:#888;
+    ">&times;</button>
+    <h3 style="margin-bottom:12px;color:#232323;">How to Enable Notifications</h3>
+    <p style="font-size:1rem;color:#444;">
+      <b>1.</b> Tap the <b>🔒</b> or <b>🔔</b> icon in your browser's address bar.<br>
+      <b>2.</b> Find "Notifications" and set it to <b>Allow</b>.<br>
+      <b>3.</b> Reload this page and tap "Enable Notifications" again.<br>
+      <br>
+      <span style="font-size:0.95rem;color:#888;">(This is a browser security feature. We can't enable it automatically.)</span>
+    </p>
+    <!-- Optionally add a screenshot or GIF here for better guidance -->
+  </div>
+</div>
+</body>
+
+</html>
