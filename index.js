@@ -1,3 +1,4 @@
+// 1. Imports
 import { firebaseConfig } from './firebase-config.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import {
@@ -18,11 +19,45 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-messaging.js";
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 const messaging = getMessaging(app);
 
+// // Now you can safely use db, auth, messaging below
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", () => {
+//     navigator.serviceWorker.register("firebase-messaging-sw.js", { scope: "./" })
+//       .then(reg => {
+//         console.log("✅ FCM Service Worker registered:", reg);
+//         getToken(messaging, {
+//           vapidKey: "BDi_-1QEvrqMS0BV8nk-Z1SL93Zy5uz1Vv-wFAmFJAWLPgV3OA-1jKsqs2rA2Oy2zGPPpkX6nXnixTslTqYR33Q",
+//           serviceWorkerRegistration: reg
+//         }).then((currentToken) => {
+//           if (!currentToken) {
+//             console.warn("⚠️ No registration token available.");
+//             return;
+//           }
+//           console.log("✅ FCM Token:", currentToken);
+//           // Now db is initialized and safe to use
+//           set(ref(db, "users/" + auth.currentUser.uid), {
+//             email: auth.currentUser.email,
+//             token: currentToken
+//           })
+//             .then(() => {
+//               console.log("✅ Token saved to Realtime DB");
+//             })
+//             .catch((err) => {
+//               console.error("❌ Failed to save token:", err);
+//             });
+//         }).catch((err) => {
+//           console.error("❌ Error getting FCM token:", err);
+//         });
+//       })
+//       .catch(err => console.error("❌ FCM Service Worker failed:", err));
+//   });
+// }
 document.addEventListener("DOMContentLoaded", () => {
   const installBtn = document.getElementById("installBtn"); // desktop
   const mobileInstallBtn = document.getElementById("mobileInstallBtn"); // mobile
@@ -51,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("installPromptShown", "true");
     }
 
+    // Show buttons
     if (installBtn) installBtn.style.display = "inline-flex";
     if (mobileInstallBtn) mobileInstallBtn.style.display = "inline-flex";
   });
@@ -84,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // Assign install handler
   handleInstall(installBtn);
   handleInstall(mobileInstallBtn);
 
@@ -107,17 +144,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+// // 🔔 Ask notification permission and get FCM token (only after login)
+// const token = await getToken(messaging, {
+//   vapidKey: "BDi_-1QEvrqMS0BV8nk-Z1SL93Zy5uz1Vv-wFAmFJAWLPgV3OA-1jKsqs2rA2Oy2zGPPpkX6nXnixTslTqYR33Q"
+// });
 
+
+// 📩 Handle foreground messages
 onMessage(messaging, (payload) => {
   console.log("📩 Message received:", payload);
   alert(`🔔 ${payload.notification?.title}\n${payload.notification?.body}`);
 });
 
-]
+// ✅ Use only this ONE auth state listener (merge all logic here)
 let currentUser = null;
 const loginBtn = document.getElementById('navbarLoginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 onAuthStateChanged(auth, user => {
+
+
   currentUser = user;
   if (user) {
     if (loginBtn) loginBtn.style.display = 'none';
@@ -193,33 +238,47 @@ document.addEventListener('DOMContentLoaded', function () {
       window.location.href = 'cart.html';
     };
   }
-    const trayAdminBtn = document.getElementById('trayAdminBtn');
+  
+
+  const trayAdminBtn = document.getElementById('trayAdminBtn');
   const trayLoginBtn = document.getElementById('trayLoginBtn');
   const trayLogoutBtn = document.getElementById('trayLogoutBtn');
+
+  // Open tray
   document.querySelector('.market-navbar__hamburger').addEventListener('click', function () {
     tray.classList.add('open');
   });
 
+  // Close tray
   closeTrayBtn.addEventListener('click', function () {
     tray.classList.remove('open');
   });
+
+  // Cart button
   trayCartBtn.onclick = function () {
     window.location.href = 'cart.html';
   };
+  
+
+  // Admin button
   trayAdminBtn.onclick = function () {
     document.getElementById('adminLoginModal').style.display = 'block';
     tray.classList.remove('open');
   };
+
+  // Login/Logout buttons
   trayLoginBtn.onclick = function () {
     document.getElementById('loginModal').style.display = 'block';
     tray.classList.remove('open');
   };
+
   trayLogoutBtn.onclick = () => {
     signOut(auth);
     tray.classList.remove('open');
   };
 });
 
+// 4. Login / Logout UI
 document.getElementById('navbarLoginBtn').onclick = () =>
   document.getElementById('loginModal').style.display = 'block';
 document.getElementById('logoutBtn').onclick = () => signOut(auth);
@@ -230,11 +289,33 @@ window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
   callback: () => { }
 });
 
+// 6. Admin login
+// const adminCreds = { username: "adminuser", password: " " };
+// let isAdmin = false;
+// document.getElementById("adminLoginBtn").onclick = () =>
+//   document.getElementById("adminLoginModal").style.display = "block";
+// document.getElementById("adminLoginSubmit").onclick = () => {
+//   const u = document.getElementById("adminUsername").value;
+//   const p = document.getElementById("adminPassword").value;
+//   if (u === adminCreds.username && p === adminCreds.password) {
+//     alert("✅ Admin logged in!"); isAdmin = true;
+//     document.getElementById("adminLoginModal").style.display = "none";
+//     displayProducts();
+//   } else alert("❌ Invalid admin credentials.");
+// };
+
+// 7. Auth UI Logic (register/login/google)
 const registerBtn = document.getElementById('registerBtn');
 if (registerBtn) {
   registerBtn.onclick = () => {
-    const e = document.getElementById('authEmail').value,
-      p = document.getElementById('authPassword').value;
+    const emailInput = document.getElementById('authEmail');
+    const passwordInput = document.getElementById('authPassword');
+    if (!emailInput || !passwordInput) {
+      alert("Login form not found on this page.");
+      return;
+    }
+    const e = emailInput.value,
+          p = passwordInput.value;
     createUserWithEmailAndPassword(auth, e, p)
       .then(uc => sendEmailVerification(uc.user).then(() => {
         alert("✅ Verification sent, please check email.");
@@ -264,6 +345,7 @@ document.getElementById('loginBtn').onclick = () => {
     .catch(err => alert("❌ Login failed: " + err.message));
 };
 
+
 document.getElementById('googleLoginBtn').onclick = () => {
   const prov = new GoogleAuthProvider();
   signInWithPopup(auth, prov)
@@ -271,13 +353,16 @@ document.getElementById('googleLoginBtn').onclick = () => {
     .catch(err => alert("❌ Google Sign-In failed: " + err.message));
 };
 
+// 8. SELL FORM SUBMISSION
+
 const form = document.getElementById('sellForm');
 const spinner = document.getElementById('loading-spinner');
 const cloudName = 'dobzp321s';
 const uploadPreset = 'your_upload_preset';
-
-const sellerName = document.getElementById('sellerName').value.trim();
-const sellerMobile = document.getElementById('sellerMobile').value.trim();
+const sellerNameInput = document.getElementById('sellerName');
+const sellerMobileInput = document.getElementById('sellerMobile');
+const sellerName = sellerNameInput ? sellerNameInput.value.trim() : "";
+const sellerMobile = sellerMobileInput ? sellerMobileInput.value.trim() : "";
 form.addEventListener('submit', async e => {
   e.preventDefault();
 
@@ -314,6 +399,7 @@ form.addEventListener('submit', async e => {
     const orig = parseFloat(document.getElementById('productPrice').value);
     const disp = (orig * 1.025).toFixed(2);
 
+    // Prepare objects
     const product = {
       product_name: document.getElementById('productName').value,
       category: document.getElementById('productCategory').value,
@@ -330,7 +416,7 @@ form.addEventListener('submit', async e => {
       seller_mobile: document.getElementById('sellerMobile').value,
       submitted_by: currentUser.email
     };
-
+    // Demo products
     if (product.isDemo) {
       card.querySelector('.price').innerHTML = `<del>₹${product.originalPrice}</del> <strong style="color:#388e3c;">₹0</strong>`;
 
@@ -339,10 +425,21 @@ form.addEventListener('submit', async e => {
       demoLabel.innerHTML = "🧪 Demo Product – No Payment Required<br><span>Use Pay ID: <strong>pay_12345678</strong></span>";
       card.appendChild(demoLabel);
     }
+
+    // 1. Store product details and get key
     const productRef = await push(ref(db, 'products'), product);
     const productKey = productRef.key;
+
+    // 2. Store seller info (linked by product key)
     await push(ref(db, 'sellers'), { ...seller, product_key: productKey });
+
+
+
+    // 4. Store buyer payment confirmation (empty at first, to be filled later)
     await push(ref(db, 'buyer_payments'), { product_key: productKey, status: "pending" });
+
+    // (Removed Google Sheet storage as requested)
+
     spinner.style.display = 'none';
 
     // seller commision
@@ -454,6 +551,10 @@ form.addEventListener('submit', async e => {
     spinner.style.display = 'none';
   }
 });
+
+
+
+// --- FILTER & SORT LOGIC ---
 const filterBtn = document.getElementById('filterBtn');
 const filterDropdown = document.getElementById('filterDropdown');
 const applyFilterBtn = document.getElementById('applyFilterBtn');
@@ -560,11 +661,11 @@ function displayProducts(query = '') {
             <p><b>Price:</b> ₹${prod.price || '0.00'}</p>
             <p><b>Category:</b> ${prod.category || ''}</p>
           `;
-
+        // Add click handler to proceed to payment page
         card.style.cursor = 'pointer';
        card.addEventListener('click', () => {
   const selected = {
-    id: prod.key, 
+    id: prod.key, // 🔑 ensure this gets passed
     product_name: prod.product_name,
     price: prod.price,
     description: prod.description,
@@ -745,14 +846,15 @@ document.getElementById("enableNotifyFab").onclick = function() {
   Notification.requestPermission().then(permission => {
     updateNotifyFabVisibility();
     if (permission === "granted") {
-
+      // Optionally: get FCM token here
     } else if (permission === "denied") {
-
+      // Show help popup
       document.getElementById("notifyHelpPopup").style.display = "flex";
     }
   });
 };
 
+// Close help popup
 document.getElementById("closeNotifyHelp").onclick = function() {
   document.getElementById("notifyHelpPopup").style.display = "none";
 };
