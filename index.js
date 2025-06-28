@@ -846,3 +846,12 @@ document.getElementById("enableNotifyFab").onclick = function() {
 document.getElementById("closeNotifyHelp").onclick = function() {
   document.getElementById("notifyHelpPopup").style.display = "none";
 };
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("firebase-messaging-sw.js", { scope: "./" })
+      .then(reg => {
+        console.log("✅ FCM Service Worker registered:", reg);
+      })
+      .catch(err => console.error("❌ FCM Service Worker failed:", err));
+  });
+}
