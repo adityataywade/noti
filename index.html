@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CampusMart</title>
 <link rel="stylesheet" href="style.css?v=1">
+  <!-- <link rel="stylesheet" href="style.css" id="styleSheet"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
   <link rel="stylesheet" href="style2.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     crossorigin="anonymous" />
@@ -22,6 +24,7 @@
           <span class="market-navbar__brand">CampusMart</span>
         </div>
         <div class="market-navbar__searchbar" id="marketNavbarSearchbar">
+
           <select class="market-navbar__select" id="categoryFilter" aria-label="Category">
             <option value="All">All</option>
             <option value="Electronics">Electronics</option>
@@ -54,22 +57,34 @@
           <li><a href="#shopSection">Shop</a></li>
           <li><a href="#sell">Sell</a></li>
         </ul>
-        <div class="market-navbar__actions">      
+        <div class="market-navbar__actions">
+          <!-- My Orders Button -->
           <button class="yellow-glass-btn" onclick="window.location.href='cart.html'" title="My Orders">
             <i class="fa-solid fa-cart-shopping"></i> My Orders
-          </button>        
+          </button>
+
+          <!-- User Email -->
           <span id="userEmail" class="navbar-user-email" style="display: none;"></span>
+
+          <!-- Login Button -->
           <button id="navbarLoginBtn" class="yellow-glass-btn" style="display: none;">
             <i class="fa fa-sign-in-alt"></i> Login
           </button>
+
+          <!-- Logout Button -->
           <button id="logoutBtn" class="yellow-glass-btn" style="display: none;">
             <i class="fa fa-sign-out-alt"></i> Logout
           </button>
+
+          <!-- Install App Button -->
           <button id="installBtn" class="market-navbar__btn install-btn">
             <i class="fa-solid fa-download"></i> Install App
           </button>
+
+          <!-- reCAPTCHA -->
           <div id="recaptcha-container"></div>
         </div>
+
         <button class="market-navbar__hamburger" id="marketNavbarHamburger" aria-label="Toggle navigation">
           <span></span><span></span><span></span>
         </button>
@@ -77,21 +92,26 @@
     </nav>
   </header>
   <div id="mobileTray" class="mobile-tray">
+
     <button class="tray-close-btn" id="closeTrayBtn">&times;</button>
     <div class="tray-section" id="trayUserId">Your ID: <span id="trayUserEmail">Not logged in</span></div>
+    <!-- This goes inside your mobile drawer or menu -->
     <button id="mobileInstallBtn" class="market-navbar__btn install-btn" style="display: none;">
       <i class="fa-solid fa-download"></i> Install App
     </button>
+    <!-- <button id="mobileInstallBtn" style="display: none;">Install App</button> -->
     <button class="yellow-glass-btn" id="myOrdersBtn" style="display:none;">My Orders</button>
     <button class="tray-btn" id="trayAdminBtn"><i class="fa fa-user-shield"></i> Admin</button>
     <button class="tray-btn" id="trayCartBtn"><i class="fa fa-cart-shopping"></i> My Cart</button>
     <button class="tray-btn" id="trayLoginBtn"><i class="fa fa-sign-in-alt"></i> Login</button>
     <button class="tray-btn" id="trayLogoutBtn" style="display:none;"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    <!-- Inside your #mobileTray div -->
 <button id="enableNotifyFab" class="tray-btn" style="display:none;">
   <i class="fa-solid fa-bell"></i> Enable Notifications
 </button>
   </div>
   <section class="hero-section">
+    <!-- Banner -->
     <div class="demo-banner">
       🧪 <strong>CampusMart Demo Week!</strong> Try buying demo products like laptops or phones — ₹0 cost.
       <br>Use Pay ID: <strong>pay_12345678</strong> at checkout!
@@ -148,8 +168,11 @@
           </select>
         </div>
       </div>
+      <!-- Product Cards Section (shop-section) -->
       <section class="shop-section" id="shopSection">
+        
       </section>
+      
       <div id="product-loading-spinner" style="display:none;text-align:center;margin:30px 0;">
         <i class="fa fa-spinner fa-spin" style="font-size:2.5rem;color:#ffb74d;"></i>
         <div style="margin-top:10px;color:#888;font-size:1.1rem;">Loading products...</div>
@@ -164,21 +187,28 @@
           <li>No listing charge</li>
         </ul>
         <a href="demo_product.png" download class="demo-download-btn">⬇ Download Demo Image</a>
+        <!-- 🔊 AUDIO -->
+        <!-- AUDIO ELEMENT -->
         <audio id="demoSound" src="demo_intro.mp3" preload="auto"></audio>
         <script>
           window.addEventListener('DOMContentLoaded', () => {
             const demoSound = document.getElementById('demoSound');
             const popup = document.getElementById('demoWelcomePopup');
-            const gotItButton = popup?.querySelector('button'); 
+            const gotItButton = popup?.querySelector('button'); // Target the "Got it!" button
+
             if (!localStorage.getItem('demoPopupShown')) {
               popup.style.display = 'flex';
               localStorage.setItem('demoPopupShown', 'true');
+
+              // When user clicks "Got it!", play the sound
               gotItButton?.addEventListener('click', () => {
                 demoSound.play().then(() => {
                   console.log("✅ Audio played on 'Got it' click");
                 }).catch((err) => {
                   console.error("❌ Could not play audio:", err);
                 });
+
+                // Hide popup after click
                 popup.style.display = 'none';
               });
             }
@@ -194,10 +224,12 @@
           document.getElementById("productDescription").value = "This is a demo product listing. No real listing fees or payment.";
         }
       </script>
+      <!-- SELL PRODUCT (separate section) -->
       <section id="sell" class="sell-section">
         <div class="sell-container">
           <h2 class="sell-heading">Sell Your Product</h2>
           <p class="sell-subtitle">Fill the details below and reach thousands of customers!</p>
+
           <form id="sellForm" class="sell-form">
             <div class="form-group">
               <input type="text" id="productName" placeholder="Product Name" required>
@@ -231,11 +263,17 @@
               <input type="file" id="imageFile" accept="image/*" required>
             </div>
             <div class="form-group">
+              <input type="file" id="optionalImages" accept="image/*" multiple>
+              <small style="color:#888;">(Optional) Add more product images</small>
+            </div>
+            <!-- Seller Details -->
+            <div class="form-group">
               <input type="text" id="sellerName" placeholder="Your Name" required>
             </div>
             <div class="form-group">
               <input type="tel" id="sellerMobile" placeholder="Your Mobile Number" required>
             </div>
+            <!-- Loader -->
             <div id="loading-spinner" style="display: none;">
               <p>Submitting...</p>
             </div>
@@ -243,6 +281,8 @@
           </form>
         </div>
       </section>
+
+      <!-- instruction -->
       <div class="seller-instructions-box">
         <h3>👤 Seller Guidelines</h3>
         <ul>
@@ -257,19 +297,23 @@
       <div id="sellerPaymentStatus" style="display:none; margin-top:20px; font-weight:bold;"></div>
   </div>
   <script>
+    // Example for dynamic footer loading
     fetch('footer.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('footer-container').innerHTML = html;
+        // Re-run the script after footer is loaded
         const links = {
           faqLink: "faqSection",
           returnsLink: "returnsSection",
           shippingLink: "shippingSection",
           contactLink: "contactSection"
         };
+
         Object.entries(links).forEach(([linkId, sectionId]) => {
           const link = document.getElementById(linkId);
           const section = document.getElementById(sectionId);
+
           if (link && section) {
             link.addEventListener("click", (e) => {
               e.preventDefault();
@@ -284,13 +328,17 @@
       });
   </script>
   <div id="footer-container"></div>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Login Modal -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
       <h2>Login or Register</h2>
+      <!-- Email Login -->
       <input type="email" id="authEmail" placeholder="Enter your email">
       <input type="password" id="authPassword" placeholder="Enter your password">
+      <!-- Google Login -->
       <button id="googleLoginBtn" class="google-btn"
         style="display:flex;align-items:center;gap:10px;justify-content:center;width:100%;padding:10px 0;margin:18px 0 10px 0;background:#fff;border:1px solid #ccc;border-radius:6px;cursor:pointer;transition:box-shadow 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
         <svg class="google-icon" width="24" height="24" viewBox="0 0 48 48"
@@ -310,6 +358,7 @@
         <span style="font-size:1.05rem;color:#222;font-weight:500;display:inline-block;vertical-align:middle;">Sign in
           with Google</span>
       </button>
+      <!-- Buttons -->
       <div class="btn-group">
         <button id="loginBtn">Login</button>
         <button id="registerBtn">Sign Up</button>
@@ -325,6 +374,7 @@
       <button id="adminLoginSubmit" class="admin-btn">Login as Admin</button>
     </div>
   </div>
+  <!-- 1st week banner -->
   <div id="floatingBanner">
     <div class="banner-content">
       <span id="headlineText">🎉 <strong>Post your product for FREE</strong> this week — no charges!</span>
@@ -332,14 +382,19 @@
       <div class="countdown" id="countdownTimer"></div>
     </div>
   </div>
+  <!-- Script: Countdown + Headline Rotator -->
+  <!-- chat bot -->
+  <!-- Modern Floating Chatbot -->
   <div id="modern-chatbot">
     <div id="chat-toggle" title="Chat with us">✨</div>
+
     <div id="chat-window" class="hidden">
       <div class="chat-header">
         <span>🧑‍🤖 SmartBot</span>
         <button id="chat-close">✕</button>
       </div>
       <div class="chat-body" id="faq-list">
+        <!-- FAQ Buttons Render Here -->
       </div>
     </div>
   </div>
@@ -350,6 +405,7 @@
       <button onclick="document.getElementById('demoWelcomePopup').style.display='none'">Got it!</button>
     </div>
   </div>
+
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('demoPopupShown')) {
@@ -359,6 +415,10 @@
       }
     });
   </script>
+  <!-- 1st week banner -->
+
+
+  <!-- ✅ Custom Install App Popup -->
   <div id="customInstallPrompt" style="
   display: none;
   position: fixed;
@@ -388,6 +448,7 @@
       cursor: pointer;
       font-size: 0.9rem;
     ">Install</button>
+
       <button id="dismissInstallBtn" style="
       background: none;
       border: none;
@@ -397,6 +458,7 @@
     ">Not now</button>
     </div>
   </div>
+
   <script src="index.js" type="module" defer></script>
 <button id="enableNotifyFab" style="
   display:none;
@@ -421,8 +483,10 @@
   transition: background 0.2s, box-shadow 0.2s;
 ">
   <i class="fa-solid fa-bell"></i>
-  <span>Enable Notifications</span>
+  <!-- <span>Enable Notifications</span> -->
 </button>
+
+<!-- Notification Help Popup (hidden by default) -->
 <div id="notifyHelpPopup" style="
   display:none;
   position:fixed;
@@ -454,6 +518,7 @@
       <br>
       <span style="font-size:0.95rem;color:#888;">(This is a browser security feature. We can't enable it automatically.)</span>
     </p>
+  
   </div>
 </div>
 </body>
