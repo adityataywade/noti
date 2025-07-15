@@ -363,6 +363,25 @@ const sellerNameInput = document.getElementById('sellerName');
 const sellerMobileInput = document.getElementById('sellerMobile');
 const sellerName = sellerNameInput ? sellerNameInput.value.trim() : "";
 const sellerMobile = sellerMobileInput ? sellerMobileInput.value.trim() : "";
+
+// --- NEW: Optional Images Input (multiple) ---
+let optionalImgsInput = document.getElementById('optionalImages');
+if (!optionalImgsInput) {
+  // Dynamically add the input if not present (for backward compatibility)
+  const optionalInputDiv = document.createElement('div');
+  optionalInputDiv.className = 'form-group';
+  optionalInputDiv.innerHTML = `
+    <input type="file" id="optionalImages" accept="image/*" multiple style="margin-top:8px;">
+    <small style="color:#888;">(Optional) Add more product images</small>
+  `;
+  // Insert after main image input
+  const mainImgInput = document.getElementById('imageFile');
+  if (mainImgInput && mainImgInput.parentElement) {
+    mainImgInput.parentElement.after(optionalInputDiv);
+    optionalImgsInput = document.getElementById('optionalImages');
+  }
+}
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
 
@@ -386,6 +405,7 @@ form.addEventListener('submit', async e => {
   fd.append('upload_preset', uploadPreset);
 
   try {
+    // 1. Upload main image
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: 'POST',
       body: fd
@@ -416,33 +436,56 @@ form.addEventListener('submit', async e => {
       seller_mobile: document.getElementById('sellerMobile').value,
       submitted_by: currentUser.email
     };
-    // Demo products
-    if (product.isDemo) {
-      card.querySelector('.price').innerHTML = `<del>₹${product.originalPrice}</del> <strong style="color:#388e3c;">₹0</strong>`;
 
-      const demoLabel = document.createElement("div");
-      demoLabel.className = "demo-label";
-      demoLabel.innerHTML = "🧪 Demo Product – No Payment Required<br><span>Use Pay ID: <strong>pay_12345678</strong></span>";
-      card.appendChild(demoLabel);
-    }
-
-    // 1. Store product details and get key
+    // 2. Store product details and get key
     const productRef = await push(ref(db, 'products'), product);
     const productKey = productRef.key;
 
-    // 2. Store seller info (linked by product key)
+    // 3. Store seller info (linked by product key)
     await push(ref(db, 'sellers'), { ...seller, product_key: productKey });
-
-
 
     // 4. Store buyer payment confirmation (empty at first, to be filled later)
     await push(ref(db, 'buyer_payments'), { product_key: productKey, status: "pending" });
 
-    // (Removed Google Sheet storage as requested)
+    // --- NEW: Upload optional images if any ---
+    if (optionalImgsInput && optionalImgsInput.files.length > 0) {
+      const files = Array.from(optionalImgsInput.files);
+      for (const file of files) {
+        const fdOpt = new FormData();
+        fdOpt.append('file', file);
+        fdOpt.append('upload_preset', uploadPreset);
+        // Add a unique public_id for each image (optional)
+        fdOpt.append('public_id', `optional_${productKey}_${Date.now()}_${Math.floor(Math.random()*10000)}`);
+
+        const resOpt = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: fdOpt
+        });
+        const dataOpt = await resOpt.json();
+        if (dataOpt.secure_url) {
+          // Push each optional image URL to /products/{productId}/optionalImgs
+          await push(ref(db, `products/${productKey}/optionalImgs`), {
+            url: dataOpt.secure_url,
+            uploadedAt: Date.now()
+          });
+        }
+      }
+    }
 
     spinner.style.display = 'none';
 
-    // seller commision
+    alert("✅ Product submitted successfully! Your product is now listed.");
+    form.reset();
+    if (optionalImgsInput) optionalImgsInput.value = ""; // Clear optional images input
+  } catch (err) {
+    console.error("❌ Error submitting product:", err);
+    alert("❌ Error: " + err.message);
+  } finally {
+    spinner.style.display = 'none';
+  }
+});
+
+// seller commision
 
 //     const fee = (orig * 0.05).toFixed(2);
 //     const modalHtml = `
@@ -541,17 +584,6 @@ form.addEventListener('submit', async e => {
 //       });
 //     }
 // alert("✅ Product submitted successfully! Please complete the payment to list your product.");
-
-    alert("✅ Product submitted successfully! Your product is now listed.");
-    form.reset();
-  } catch (err) {
-    console.error("❌ Error submitting product:", err);
-    alert("❌ Error: " + err.message);
-  } finally {
-    spinner.style.display = 'none';
-  }
-});
-
 
 
 // --- FILTER & SORT LOGIC ---
@@ -657,7 +689,7 @@ function displayProducts(query = '') {
         card.innerHTML = `
             <img class="product-image" src="${prod.image_url || 'image.png'}" alt="${prod.product_name}">
             <h3>${prod.product_name || ''}</h3>
-                  <p class="product-description">${prod.description || ''}</p>
+            <p class="product-description">${prod.description || ''}</p>
             <p><b>Price:</b> ₹${prod.price || '0.00'}</p>
             <p><b>Category:</b> ${prod.category || ''}</p>
           `;
@@ -760,7 +792,8 @@ setInterval(() => {
 // ✅ UNIVERSAL COUNTDOWN TIMER (Fixed for all users)
 const countdown = document.getElementById("countdownTimer");
 // Set your universal offer end date here 👇
-const offerEndDate = new Date("2025-06-30T00:00:00").getTime();
+const offerEndDate = new Date("2025-08-01T00:00:00").getTime();
+
 function updateCountdown() {
   const now = new Date().getTime();
   const distance = offerEndDate - now;
