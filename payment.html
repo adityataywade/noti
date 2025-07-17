@@ -132,51 +132,39 @@
     <button class="tray-btn" id="trayLogoutBtn" style="display:none;"><i class="fa fa-sign-out-alt"></i> Logout</button>
     <button class="tray-btn" id="trayCartBtn"><i class="fa fa-cart-shopping"></i> My Cart</button>
   </div>
-  <div id="reviewPopup" class="review-popup">
-    <div class="review-content">
-      <span class="close-review" onclick="closeReviewPopup()">&times;</span>
-      <h2>Share Your Experience 📢</h2>
-      <textarea id="userReview" placeholder="Write your feedback here..."></textarea>
-      <div id="starRating" class="star-rating">
-        <span class="star" data-value="1">★</span>
-        <span class="star" data-value="2">★</span>
-        <span class="star" data-value="3">★</span>
-        <span class="star" data-value="4">★</span>
-        <span class="star" data-value="5">★</span>
-      </div>
-      <button onclick="submitReview()" class="submit-review-btn">Submit Review</button>
-    </div>
-  </div>
+  <!-- <div id="reviewPopup" class="review-popup"> -->
+    
   <div class="payment-container">
     <div class="product-details">
+      <div id="optionalGallery" class="thumbnail-gallery"></div>
       <div class="product-image" id="productImage"></div>
+
+
       <div class="product-info">
         <h2 id="productName">Product Name</h2>
         <p id="productDescription">Product description...</p>
         <p><strong>Category:</strong> <span id="productCategory"></span></p>
         <p><strong>Price:</strong> ₹<span id="productPrice"></span></p>
-        <div class="payment-section">
-          <button class="pay-btn-modern" onclick="showPaymentPopup()">
-            <i class="fas fa-wallet"></i> Proceed to Payment
-          </button>
-         
-          <a id="upiPayButton" href="#" class="pay-btn-modern mobile-only">
-            <i class="fas fa-wallet"></i> Pay via UPI App
-          </a>
-
-          <a id="whatsappInquireBtn" href="#" class="pay-btn-modern mobile-only whatsapp-btn">
-  <i class="fab fa-whatsapp"></i> Inquire on WhatsApp
-</a>
-
+   <div class="payment-section">
+     <a id="upiPayButton" href="#" class="pay-btn-modern upi-btn mobile-only">
+    <i class="fas fa-wallet"></i> Pay via UPI App
+  </a>
+  <button class="pay-btn-modern" onclick="showPaymentPopup()">
+    <i class="fas fa-wallet"></i> Proceed to Payment
+  </button>
+ 
+  <a id="whatsappInquireBtn" href="#" class="pay-btn-modern whatsapp-btn mobile-only">
+    <i class="fab fa-whatsapp"></i> Inquire on WhatsApp
+  </a>
+</div>
+      </div>
+      <div class="upi-alert-mobile">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="upi-alert-text">
+          <strong>Wait! 🔴</strong> After UPI payment, you <b>MUST</b> submit the form below.<br>
+          <span class="danger-text">No form = No order ✅</span>
         </div>
       </div>
- <div class="upi-alert-mobile">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div class="upi-alert-text">
-              <strong>Wait! 🔴</strong> After UPI payment, you <b>MUST</b> submit the form below.<br>
-              <span class="danger-text">No form = No order ✅</span>
-            </div>
-          </div>
       <div class="upi-proof-box glassy-box">
         <h3>💸 Submit UPI Payment Proof</h3>
         <p class="instructions">
@@ -196,7 +184,7 @@
         </button>
       </div>
     </div>
-    
+
     <a href="index.html" class="back-btn">← Back to Home</a>
     <div id="contactNoteBox"
       style="display:none; margin-top: 20px; padding: 15px; background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 5px;">
@@ -204,46 +192,47 @@
     </div>
   </div>
   <section class="attention-guide">
-  <h2><span class="icon">🔰</span> Smooth & Safe Buying Process</h2>
-  <div class="attention-cards">
-    <div class="attention-card">
-      <span class="attention-icon">🛒</span>
-      <h3>1. Browse & Select</h3>
-      <p>Explore CampusMart and choose your product.</p>
-    </div>
-    <div class="attention-card">
-      <span class="attention-icon">💳</span>
-      <h3>2. Payment</h3>
-      <p>Click <strong>Proceed to Payment</strong> or <strong>Pay via UPI</strong> to send money.</p>
-    </div>
-    <div class="attention-card">
-      <span class="attention-icon">📤</span>
-      <h3>3. Submit Proof</h3>
-      <p>Upload your <strong>payment screenshot</strong> with mobile number for verification.</p>
-    </div>
-    <div class="attention-card highlight-card">
-  <span class="attention-icon">📧</span>
-  <h3>4. Order Confirmation</h3>
-  <p><strong>After submitting payment proof,</strong> you’ll get an official email with your product & order details. <strong>This confirms your order is booked.</strong></p>
-</div>
+    <h2><span class="icon">🔰</span> Smooth & Safe Buying Process</h2>
+    <div class="attention-cards">
+      <div class="attention-card">
+        <span class="attention-icon">🛒</span>
+        <h3>1. Browse & Select</h3>
+        <p>Explore CampusMart and choose your product.</p>
+      </div>
+      <div class="attention-card">
+        <span class="attention-icon">💳</span>
+        <h3>2. Payment</h3>
+        <p>Click <strong>Proceed to Payment</strong> or <strong>Pay via UPI</strong> to send money.</p>
+      </div>
+      <div class="attention-card">
+        <span class="attention-icon">📤</span>
+        <h3>3. Submit Proof</h3>
+        <p>Upload your <strong>payment screenshot</strong> with mobile number for verification.</p>
+      </div>
+      <div class="attention-card highlight-card">
+        <span class="attention-icon">📧</span>
+        <h3>4. Order Confirmation</h3>
+        <p><strong>After submitting payment proof,</strong> you’ll get an official email with your product & order
+          details. <strong>This confirms your order is booked.</strong></p>
+      </div>
 
-    <div class="attention-card">
-      <span class="attention-icon">🚚</span>
-      <h3>5. Delivery</h3>
-      <p>We coordinate delivery or pickup. Track updates via WhatsApp or email.</p>
+      <div class="attention-card">
+        <span class="attention-icon">🚚</span>
+        <h3>5. Delivery</h3>
+        <p>We coordinate delivery or pickup. Track updates via WhatsApp or email.</p>
+      </div>
+      <div class="attention-card">
+        <span class="attention-icon">📞</span>
+        <h3>6. Doubts or Bargain?</h3>
+        <p>Contact us on WhatsApp <strong>before paying</strong> for any doubt or bargain.</p>
+      </div>
+      <div class="attention-card">
+        <span class="attention-icon">✅</span>
+        <h3>7. Confirm & Done</h3>
+        <p>After receiving the product, go to your cart and click <strong>"Confirm Received"</strong>.</p>
+      </div>
     </div>
-    <div class="attention-card">
-      <span class="attention-icon">📞</span>
-      <h3>6. Doubts or Bargain?</h3>
-      <p>Contact us on WhatsApp <strong>before paying</strong> for any doubt or bargain.</p>
-    </div>
-    <div class="attention-card">
-      <span class="attention-icon">✅</span>
-      <h3>7. Confirm & Done</h3>
-      <p>After receiving the product, go to your cart and click <strong>"Confirm Received"</strong>.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
   <div id="qrPopup" class="qr-popup-modern glass-popup">
     <div class="qr-content-modern light-glass">
@@ -540,7 +529,7 @@
       const file = document.getElementById("popupPaymentScreenshot").files[0];
       document.querySelector(".send-id-btn").disabled = !(id && file);
     }
-    window.onload = () => {
+    window.onload = async () => {
       const product = JSON.parse(localStorage.getItem('selectedProduct'));
       currentProduct = product;
       if (product) {
@@ -550,50 +539,60 @@
         document.getElementById('productPrice').textContent = product.price;
         document.getElementById('productImage').style.backgroundImage = `url(${product.image_url})`;
 
+        // --- Optional Images Gallery ---
         const dbRef = ref(getDatabase());
+        const galleryDiv = document.getElementById('optionalGallery');
+        galleryDiv.innerHTML = ""; // Clear previous
+
+        // Always show main image as first thumbnail
+        const mainThumb = document.createElement('img');
+        mainThumb.src = product.image_url;
+        mainThumb.className = 'thumbnail-img selected';
+        mainThumb.alt = "Main Image";
+        mainThumb.onclick = () => {
+          document.getElementById('productImage').style.backgroundImage = `url(${product.image_url})`;
+          document.querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('selected'));
+          mainThumb.classList.add('selected');
+        };
+        galleryDiv.appendChild(mainThumb);
+
+        // Fetch optional images from Firebase
         get(child(dbRef, `products/${product.id}/optionalImgs`)).then(snapshot => {
           if (snapshot.exists()) {
             const imgData = Object.values(snapshot.val());
-            const gallery = document.createElement('div');
-            gallery.className = 'thumbnail-gallery';
-
             imgData.forEach((imgObj, i) => {
               const thumb = document.createElement('img');
               thumb.src = imgObj.url;
               thumb.className = 'thumbnail-img';
-              if (i === 0) thumb.classList.add('selected');
+              thumb.alt = `Optional Image ${i + 1}`;
               thumb.onclick = () => {
                 document.getElementById('productImage').style.backgroundImage = `url(${imgObj.url})`;
                 document.querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('selected'));
                 thumb.classList.add('selected');
               };
-              gallery.appendChild(thumb);
+              galleryDiv.appendChild(thumb);
             });
-
-            document.getElementById('productImage').appendChild(gallery);
           }
         });
 
       } else {
         document.querySelector('.payment-container').innerHTML = '<p style="text-align:center">No product selected.</p>';
-
-        currentProduct = JSON.parse(localStorage.getItem("selectedProduct"));
-
+        currentProduct = null;
       }
     };
-   
+
 
 
     window.addEventListener("DOMContentLoaded", () => {
       const product = JSON.parse(localStorage.getItem("selectedProduct"));
       const whatsappBtn = document.getElementById("whatsappInquireBtn");
-if (product && whatsappBtn) {
-  const productName = encodeURIComponent(product.product_name || "Unknown Product");
-  const price = encodeURIComponent(product.price || "");
-  const message = `Hi! I have a question about this product:\n\n*${productName}*\nPrice: ₹${price}`;
-  const phone = "918766880183";
-  whatsappBtn.href = `https://wa.me/${phone}?text=${message}`;
-}
+      if (product && whatsappBtn) {
+        const productName = encodeURIComponent(product.product_name || "Unknown Product");
+        const price = encodeURIComponent(product.price || "");
+        const message = `Hi! I have a question about this product:\n\n*${productName}*\nPrice: ₹${price}`;
+        const phone = "918766880183";
+        whatsappBtn.href = `https://wa.me/${phone}?text=${message}`;
+      }
 
       if (!product) {
         alert("No product found. Redirecting...");
