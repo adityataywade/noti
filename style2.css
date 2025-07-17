@@ -379,11 +379,6 @@ body {
     display: none;
   }
 }
-@media (max-width: 1001px) {
-  .pay-btn-modern:not(.mobile-only) {
-    display: none;
-  }
-}
 
 .payment-id-section {
   display: flex;
@@ -1022,4 +1017,109 @@ textarea#userReview {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
   }
+}
+#optionalGallery.thumbnail-gallery {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 18px;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+#optionalGallery .thumbnail-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid #eee;
+  box-shadow: 0 1px 6px #0002;
+  background: #fff;
+  transition: border 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+#optionalGallery .thumbnail-img.selected,
+#optionalGallery .thumbnail-img:focus {
+  border: 2px solid #1a73e8;
+  box-shadow: 0 2px 8px #1a73e822;
+  transform: scale(1.08);
+}
+@media (max-width: 600px) {
+  #optionalGallery .thumbnail-img {
+    width: 44px;
+    height: 44px;
+  }
+}
+/* ...existing code... */
+
+/* Desktop/Laptop: Make optionalGallery vertical and beside the main image */
+@media (min-width: 777px) {
+  .product-details {
+    align-items: flex-start;
+    /* ensures children align at the top */
+  }
+  #optionalGallery.thumbnail-gallery {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+    margin-top: 0;
+    margin-left: 18px;
+    margin-bottom: 0;
+    min-width: 64px;
+    height: 300px;
+  }
+  #optionalGallery .thumbnail-img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Mobile: Already horizontal, no change needed */
+/* Hide on desktop (screen width > 1100px) */
+.mobile-only {
+  display: none !important;
+}
+
+/* Show on mobile/tablet (≤1100px) */
+@media (max-width: 1100px) {
+  .mobile-only {
+    display: inline-flex !important;
+  }
+  .payment-section {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 18px;
+  }
+  .pay-btn-modern,
+  .whatsapp-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.08rem;
+  }
+}
+
+.pay-btn-modern.whatsapp-btn {
+  background: linear-gradient(90deg, #25d366 60%, #128c7e 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 18px 0 rgba(37, 211, 102, 0.10), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background 0.22s, box-shadow 0.22s, transform 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+
+.pay-btn-modern.whatsapp-btn:hover,
+.pay-btn-modern.whatsapp-btn:focus {
+  background: linear-gradient(90deg, #1ebe5d 60%, #075e54 100%);
+  box-shadow: 0 6px 24px 0 rgba(37, 211, 102, 0.18), 0 2px 8px 0 rgba(0,0,0,0.13);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.pay-btn-modern.whatsapp-btn i {
+  color: #fff;
+  font-size: 1.3em;
+  margin-right: 8px;
 }
