@@ -857,41 +857,6 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-function updateNotifyFabVisibility() {
-  const fab = document.getElementById("enableNotifyFab");
-  if (!fab) return;
-  // Only show on mobile and if not granted
-  if (window.innerWidth <= 420 && window.Notification && Notification.permission !== "granted") {
-    fab.style.display = "flex";
-  } else {
-    fab.style.display = "none";
-  }
-}
-window.addEventListener("DOMContentLoaded", updateNotifyFabVisibility);
-window.addEventListener("resize", updateNotifyFabVisibility);
-document.addEventListener("visibilitychange", updateNotifyFabVisibility);
-
-document.getElementById("enableNotifyFab").onclick = function() {
-  if (!window.Notification) {
-    alert("Notifications are not supported in your browser.");
-    return;
-  }
-  Notification.requestPermission().then(permission => {
-    updateNotifyFabVisibility();
-    if (permission === "granted") {
-      // Optionally: get FCM token here
-    } else if (permission === "denied") {
-      // Show help popup
-      document.getElementById("notifyHelpPopup").style.display = "flex";
-    }
-  });
-};
-
-// Close help popup
-document.getElementById("closeNotifyHelp").onclick = function() {
-  document.getElementById("notifyHelpPopup").style.display = "none";
-};
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("firebase-messaging-sw.js", { scope: "./" })
@@ -901,3 +866,4 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.error("❌ FCM Service Worker failed:", err));
   });
 }
+
