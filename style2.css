@@ -1123,3 +1123,66 @@ textarea#userReview {
   font-size: 1.3em;
   margin-right: 8px;
 }
+
+/* Compact actions card wrapping mode, actions, and WhatsApp */
+.actions-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 520px;
+  margin-top: 12px;
+}
+.actions-card .payment-section {
+  margin-top: 2px;
+}
+.actions-card .pay-btn-modern { /* keep buttons tidy */
+  min-width: 230px;
+}
+.actions-card .whatsapp-btn {
+  align-self: flex-start;
+  min-width: 230px;
+}
+
+/* Coupon (left) + Actions (right) grid */
+.coupon-actions-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+  align-items: start;
+  margin-top: 8px;
+}
+.coupon-actions-grid .actions-card,
+.coupon-actions-grid #offerCouponBox {
+  width: 100%;
+  max-width: 100%;
+}
+.coupon-actions-grid .actions-card .whatsapp-btn {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .coupon-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1100px) {
+  .actions-card {
+    max-width: 100%;
+  }
+  .actions-card .pay-btn-modern,
+  .actions-card .whatsapp-btn {
+    width: 100%;
+  }
+}
+
+/* Active state for payment mode selection buttons */
+.cm-mode-select .glass-button.active {
+  outline: 3px solid rgba(26, 115, 232, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
