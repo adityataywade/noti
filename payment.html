@@ -7,7 +7,8 @@
   <title>Product Payment - CampusMart</title>
   <link rel="stylesheet" href="style.css?v=1">
   <link rel="stylesheet" href="style2.css" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" href="ekd-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="ekd-logo.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
@@ -21,6 +22,25 @@
           <img src="ekd-logo.png" alt="CampusMart Logo" class="market-navbar__logo-img" />
           <span class="market-navbar__brand">CampusMart</span>
         </div>
+  <!-- Reserve Payment Popup -->
+  <div id="qrPopupReserve" class="qr-popup-modern glass-popup" style="display:none;">
+    <div class="qr-content-modern light-glass">
+      <span class="close-btn-modern" onclick="closePaymentPopup()">&times;</span>
+      <h2 class="popup-heading">Scan & Pay (Reservation)</h2>
+      <img src="payment.jpg" alt="QR Code" class="qr-img-modern" />
+      <p class="upi-id-modern">UPI ID: <strong>dipaktaywade3@okaxis</strong></p>
+      <h3 class="popup-subheading">After Payment, Submit Proof</h3>
+      <input type="text" id="popupPaymentIdReserve" placeholder="Enter Your Mobile Number" class="glass-input" />
+      <input type="file" id="popupPaymentScreenshotReserve" accept="image/*" class="glass-file" />
+      <div class="qrLoadingSpinner" style="display:none; text-align:center; margin:10px 0;">
+        <i class="fa fa-spinner fa-spin" style="font-size:1.6em; color:#1a73e8;"></i>
+        <div style="color:#1a73e8; font-weight:600;">Uploading...</div>
+      </div>
+      <button onclick="sendPaymentId()" class="glass-button send-id-btn">
+        <i class="fas fa-paper-plane"></i> Submit Payment
+      </button>
+    </div>
+  </div>
         <div class="market-navbar__searchbar" id="marketNavbarSearchbar">
           <select class="market-navbar__select" id="categoryFilter" aria-label="Category">
             <option value="All">All</option>
@@ -138,6 +158,26 @@
     <div class="product-details">
       <div id="optionalGallery" class="thumbnail-gallery"></div>
       <div class="product-image" id="productImage"></div>
+      <!-- Moved here: Difference box under product image (left column) -->
+      <div class="cm-mode-info" style="margin-top:10px;">
+        <div class="cm-mode-title">Full vs Reserve</div>
+        <div class="cm-mode-cols">
+          <div class="cm-mode-col">
+            <div class="cm-mode-col-title">Full Payment</div>
+            <ul>
+              <li>Pay 100% now</li>
+              <li>Faster processing</li>
+            </ul>
+          </div>
+          <div class="cm-mode-col">
+            <div class="cm-mode-col-title">Reserve (5%)</div>
+            <ul>
+              <li>Pay 5% now, rest later</li>
+              <li>Item held for you</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
 
       <div class="product-info">
@@ -145,18 +185,53 @@
         <p id="productDescription">Product description...</p>
         <p><strong>Category:</strong> <span id="productCategory"></span></p>
         <p><strong>Price:</strong> ₹<span id="productPrice"></span></p>
-   <div class="payment-section">
-     <a id="upiPayButton" href="#" class="pay-btn-modern upi-btn mobile-only">
-    <i class="fas fa-wallet"></i> Pay via UPI App
-  </a>
-  <button class="pay-btn-modern" onclick="showPaymentPopup()">
-    <i class="fas fa-wallet"></i> Proceed to Payment
-  </button>
- 
-  <a id="whatsappInquireBtn" href="#" class="pay-btn-modern whatsapp-btn mobile-only">
-    <i class="fab fa-whatsapp"></i> Inquire on WhatsApp
-  </a>
-</div>
+        <!-- Coupon (left) + Actions (right) -->
+        <div class="coupon-actions-grid">
+          <!-- Offer & Coupon Code (left) -->
+          <div id="offerCouponBox" class="glassy-box" style="margin-top:10px;padding:12px;border-radius:10px;background:#f5fbff;border:1px solid #d6ecff;">
+            <div style="font-weight:600;margin-bottom:6px;">Offer & Coupon Code</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input id="couponInput" type="text" placeholder="Enter coupon (e.g., CAMPUSMART)" class="glass-input" style="flex:1;min-width:200px;">
+              <button id="applyCouponBtn" class="glass-button" type="button">Apply</button>
+            </div>
+            <div id="couponMsg" style="margin-top:6px;font-size:0.95rem;color:#0f5132;display:none;">Coupon applied.</div>
+            <div id="couponErr" style="margin-top:6px;font-size:0.95rem;color:#842029;display:none;">Invalid coupon.</div>
+            <div id="priceBreakup" style="margin-top:8px;color:#333;font-size:0.95rem;">
+              <div><strong>Display Price:</strong> ₹<span id="displayPriceSpan">0</span></div>
+              <div id="discountRow" style="display:none;"><strong>Coupon Discount (2.5%):</strong> −₹<span id="discountSpan">0</span></div>
+              <div style="font-weight:700;margin-top:2px;">Payable: ₹<span id="payableSpan">0</span></div>
+            </div>
+            <div style="margin-top:8px;color:#666;font-size:0.9rem;">Tip: Use <strong>CAMPUSMART</strong> for 2.5% off. Reservation charges 5% of the <em>discounted</em> price.</div>
+          </div>
+
+          <!-- Actions Card: mode + buttons + WhatsApp (right) -->
+          <div class="actions-card">
+            <!-- Choose Payment Mode -->
+            <div class="glassy-box cm-mode-select" style="margin-top:0;padding:10px;border-radius:10px;background:#fff8e1;border:1px solid #ffe0a3;">
+              <div style="font-weight:600;margin-bottom:6px;">Choose Payment Mode</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button id="fullPayBtn" class="glass-button" type="button" style="background:#10b981;">Pay Full Price</button>
+                <button id="reserveBtn" class="glass-button" type="button" style="background:#f59e0b;">Reserve (Pay 5%)</button>
+              </div>
+              <div id="modeNote" style="margin-top:6px;color:#444;font-size:0.95rem;">Mode: Full Payment</div>
+            </div>
+
+            <!-- Primary payment actions -->
+            <div class="payment-section" style="display:none">
+              <a id="upiPayButton" href="#" class="pay-btn-modern upi-btn">
+                <i class="fas fa-wallet"></i> Pay via UPI App
+              </a>
+              <button class="pay-btn-modern" onclick="showPaymentPopup()">
+                <i class="fas fa-wallet"></i> Proceed to Payment
+              </button>
+            </div>
+
+            <!-- WhatsApp Inquire (compact) -->
+            <a id="whatsappInquireBtn" href="#" class="pay-btn-modern whatsapp-btn">
+              <i class="fab fa-whatsapp"></i> Inquire on WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
       <div class="upi-alert-mobile">
         <i class="fas fa-exclamation-triangle"></i>
@@ -175,8 +250,8 @@
         <input type="text" id="manualPaymentId" placeholder="Enter your mobile number" class="glass-input" />
         <input type="file" id="paymentProofScreenshot" accept="image/*" class="glass-file" />
         <button onclick="submitUPIPayment()" class="glass-button" id="manualSubmitBtn">
-          <!-- Add this inside .qr-content-modern, above the submit button -->
-          <div id="qrLoadingSpinner" style="display:none; text-align:center; margin-bottom:10px;">
+          <!-- Upload spinner (manual proof section) -->
+          <div id="uploadSpinner" style="display:none; text-align:center; margin-bottom:10px;">
             <i class="fa fa-spinner fa-spin" style="font-size:2em; color:#1a73e8;"></i>
             <div style="color:#1a73e8;">Uploading...</div>
           </div>
@@ -243,6 +318,10 @@
       <h3 class="popup-subheading">After Payment, Submit Proof</h3>
       <input type="text" id="popupPaymentId" placeholder="Enter Your Mobile Number" class="glass-input" />
       <input type="file" id="popupPaymentScreenshot" accept="image/*" class="glass-file" />
+      <div id="qrLoadingSpinner" style="display:none; text-align:center; margin:10px 0;">
+        <i class="fa fa-spinner fa-spin" style="font-size:1.6em; color:#1a73e8;"></i>
+        <div style="color:#1a73e8; font-weight:600;">Uploading...</div>
+      </div>
       <button onclick="sendPaymentId()" class="glass-button send-id-btn">
 
         <i class="fas fa-paper-plane"></i> Submit Payment
@@ -285,6 +364,14 @@
   </script>
   <script type="module">
     let currentProduct = null;
+    let currentSeller = { name: null, mobile: null };
+
+    // Pricing state
+    let paymentMode = 'full'; // 'full' | 'reserve'
+    let displayPrice = 0;     // stored price (likely includes 2.5% markup)
+    let originalPrice = 0;    // derived base price without markup
+    let couponApplied = false;
+    let payableAmount = 0;    // final amount user should pay
 
     import emailjs from 'https://esm.sh/@emailjs/browser';
     emailjs.init("wVTxCgXP-mcJn5IP4");
@@ -358,10 +445,17 @@
         document.getElementById("upiPayButton").click();
         return;
       }
-      document.getElementById("qrPopup").style.display = "flex";
+      // Route popup based on mode
+      if (paymentMode === 'reserve') {
+        document.getElementById("qrPopupReserve").style.display = "flex";
+      } else {
+        document.getElementById("qrPopup").style.display = "flex";
+      }
     };
     window.closePaymentPopup = () => {
       document.getElementById("qrPopup").style.display = "none";
+      const r = document.getElementById("qrPopupReserve");
+      if (r) r.style.display = "none";
     };
     function sendBuyerEmail(paymentData) {
       emailjs.send("service_e32z7z5", "template_bd14k2m", {
@@ -370,7 +464,8 @@
         product_name: paymentData.productName,
         price: paymentData.amount,
         order_date: new Date().toLocaleString(),
-        seller_name: "CampusMart Seller"
+        seller_name: currentSeller.name || "CampusMart Seller",
+        seller_mobile: currentSeller.mobile || ""
       }).then(
         (response) => console.log("✅ Buyer confirmation sent!", response),
         (error) => console.error("❌ Buyer confirmation failed:", error)
@@ -415,32 +510,33 @@
       }
     };
     window.sendPaymentId = async function () {
-      const spinner = document.getElementById("qrLoadingSpinner");
+      const spinner = document.querySelector(paymentMode === 'reserve' ? '#qrPopupReserve .qrLoadingSpinner' : '#qrPopup .qrLoadingSpinner');
       const sendButton = document.querySelector(".send-id-btn");
-      spinner.style.display = "block"; // Show spinner immediately
+      if (spinner) spinner.style.display = "block"; // Show spinner if present
 
       // Let the browser render the spinner before heavy work
       setTimeout(async () => {
-        const enteredId = document.getElementById("popupPaymentId").value.trim();
-        const screenshotInput = document.getElementById("popupPaymentScreenshot");
-        const screenshotFile = screenshotInput.files[0];
+        const popupId = paymentMode === 'reserve' ? 'popupPaymentIdReserve' : 'popupPaymentId';
+        const enteredId = document.getElementById(popupId).value.trim();
+        const screenshotInput = paymentMode === 'reserve' ? 'popupPaymentScreenshotReserve' : 'popupPaymentScreenshot';
+        const screenshotFile = document.getElementById(screenshotInput).files[0];
 
         if (!enteredId || !screenshotFile || !screenshotFile.type.startsWith("image/")) {
-          spinner.style.display = "none";
-          alert("❌ Please enter Your Mobile Numberand upload a valid payment screenshot.");
+          if (spinner) spinner.style.display = "none";
+          alert("❌ Please enter Your Mobile Number and upload a valid payment screenshot.");
           return;
         }
 
         const user = auth.currentUser;
         if (!user) {
-          spinner.style.display = "none";
+          if (spinner) spinner.style.display = "none";
           alert("You must be logged in to make a payment.");
           return;
         }
 
         const product = JSON.parse(localStorage.getItem("selectedProduct"));
         if (!product) {
-          spinner.style.display = "none";
+          if (spinner) spinner.style.display = "none";
           alert("❌ No product found in localStorage.");
           return;
         }
@@ -461,11 +557,13 @@
             name: user.displayName || "anonymous",
             buyer_name: user.displayName || "anonymous",
             buyer_email: user.email || "",
-            amount: product.price || "",
+            amount: payableAmount || "",
             productId: product.id || "",
             productName: product.product_name || "",
             proofUrl: downloadURL,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            paymentType: paymentMode,
+            couponApplied
           };
 
           // Store payment and cart info
@@ -481,7 +579,9 @@
             buyerConfirmed: false,
             timestamp: paymentData.timestamp,
             buyer_name: paymentData.buyer_name || paymentData.name || "Unknown",
-            buyer_email: paymentData.buyer_email || paymentData.email || "-"
+            buyer_email: paymentData.buyer_email || paymentData.email || "-",
+            paymentType: paymentMode,
+            couponApplied
           };
           await set(ref(db, `carts/${user.uid}/${customPayId}`), cartProduct);
 
@@ -493,12 +593,28 @@
             amount: paymentData.amount,
             payId: paymentData.payId,
             proofUrl: paymentData.proofUrl,
-            timestamp: paymentData.timestamp
+            timestamp: paymentData.timestamp,
+            paymentType: paymentMode,
+            seller_name: currentSeller.name || '',
+            seller_mobile: currentSeller.mobile || ''
           }).then(
             (response) => console.log("✅ Admin notified!", response),
             (error) => console.error("❌ Admin notification failed:", error)
           );
           sendBuyerEmail(paymentData);
+
+          // If reservation, also store a reservation record for admin follow-up
+          if (paymentMode === 'reserve') {
+            try {
+              await set(ref(db, 'reservations/' + customPayId), {
+                ...paymentData,
+                originalPrice,
+                reserveAmount: paymentData.amount,
+                seller_name: currentSeller.name || '',
+                seller_mobile: currentSeller.mobile || ''
+              });
+            } catch (e) { console.warn('Failed to store reservation record', e); }
+          }
 
           // UI feedback
           handlePaymentSuccess();
@@ -510,14 +626,12 @@
           successMessage.style.fontWeight = "bold";
           paymentSection.appendChild(successMessage);
 
-        } catch (err) {
-          console.error("❌ Error:", err);
-          alert("❌ Payment failed. Try again.");
-        } finally {
-          spinner.style.display = "none";
-          sendButton.disabled = false;
-          sendButton.textContent = "Send My Payment ID";
+        } catch (error) {
+          console.error("Payment submission error:", error);
+          if (spinner) spinner.style.display = "none";
+          alert("Error submitting payment. Please try again.");
         }
+        if (spinner) spinner.style.display = "none";
       }, 0); // Let browser render spinner before heavy work
     };
 
@@ -538,6 +652,25 @@
         document.getElementById('productCategory').textContent = product.category;
         document.getElementById('productPrice').textContent = product.price;
         document.getElementById('productImage').style.backgroundImage = `url(${product.image_url})`;
+
+        // Initialize pricing state for coupon & modes
+        displayPrice = parseFloat(product.price || '0');
+        originalPrice = +(displayPrice / 1.025).toFixed(2);
+        payableAmount = displayPrice; // default full payment without coupon
+        const displayPriceSpanEl = document.getElementById('displayPriceSpan');
+        const payableSpanEl = document.getElementById('payableSpan');
+        if (displayPriceSpanEl) displayPriceSpanEl.textContent = displayPrice.toFixed(2);
+        if (payableSpanEl) payableSpanEl.textContent = payableAmount.toFixed(2);
+
+        // Inject base price note under product price
+        const priceP = document.getElementById('productPrice');
+        if (priceP) {
+          const note = document.createElement('div');
+          note.style.fontSize = '0.9rem';
+          note.style.color = '#555';
+          note.textContent = `Base: ₹${originalPrice.toFixed(2)} • incl. 2.5% fee`;
+          priceP.parentElement && priceP.parentElement.appendChild(note);
+        }
 
         // --- Optional Images Gallery ---
         const dbRef = ref(getDatabase());
@@ -575,71 +708,138 @@
           }
         });
 
+        // Fetch seller details for emails/reservations
+        try {
+          const sellersSnap = await get(child(dbRef, 'sellers'));
+          if (sellersSnap.exists()) {
+            const sellersObj = sellersSnap.val();
+            const match = Object.values(sellersObj).find(s => s.product_key === product.id);
+            if (match) {
+              currentSeller.name = match.seller_name || null;
+              currentSeller.mobile = match.seller_mobile || null;
+            }
+          }
+        } catch (e) { console.warn('Failed to fetch seller details', e); }
+
       } else {
         document.querySelector('.payment-container').innerHTML = '<p style="text-align:center">No product selected.</p>';
         currentProduct = null;
       }
+      // Refresh WhatsApp link with product info once loaded
+      setWhatsappLink();
     };
 
+    // Coupon & Mode elements
+    const couponInput = document.getElementById('couponInput');
+    const applyCouponBtn = document.getElementById('applyCouponBtn');
+    const couponMsg = document.getElementById('couponMsg');
+    const couponErr = document.getElementById('couponErr');
+    const discountRow = document.getElementById('discountRow');
+    const discountSpan = document.getElementById('discountSpan');
+    const payableSpan = document.getElementById('payableSpan');
+    const modeNote = document.getElementById('modeNote');
+    const fullPayBtn = document.getElementById('fullPayBtn');
+    const reserveBtn = document.getElementById('reserveBtn');
+    const upiButton = document.getElementById('upiPayButton');
+    const paymentSection = document.querySelector('.payment-section');
+    const whatsappInquireBtn = document.getElementById('whatsappInquireBtn');
 
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const product = JSON.parse(localStorage.getItem("selectedProduct"));
-      const whatsappBtn = document.getElementById("whatsappInquireBtn");
-      if (product && whatsappBtn) {
-        const productName = encodeURIComponent(product.product_name || "Unknown Product");
-        const price = encodeURIComponent(product.price || "");
-        const message = `Hi! I have a question about this product:\n\n*${productName}*\nPrice: ₹${price}`;
-        const phone = "918766880183";
-        whatsappBtn.href = `https://wa.me/${phone}?text=${message}`;
+      function refreshAmounts() {
+        // Apply coupon to display price if present
+        const discount = couponApplied ? +(displayPrice * 0.025).toFixed(2) : 0;
+        const discountedPrice = +(displayPrice - discount).toFixed(2);
+        if (paymentMode === 'reserve') {
+          const reserveAmt = +(discountedPrice * 0.05).toFixed(2);
+          payableAmount = reserveAmt;
+          if (discountSpan) discountSpan.textContent = discount.toFixed(2);
+          if (discountRow) discountRow.style.display = couponApplied ? 'block' : 'none';
+          if (modeNote) modeNote.textContent = `Mode: Reservation (Pay 5% of discounted = ₹${reserveAmt.toFixed(2)})`;
+        } else {
+          payableAmount = discountedPrice;
+          if (discountSpan) discountSpan.textContent = discount.toFixed(2);
+          if (discountRow) discountRow.style.display = couponApplied ? 'block' : 'none';
+          if (modeNote) modeNote.textContent = 'Mode: Full Payment';
+        }
+        if (payableSpan) payableSpan.textContent = payableAmount.toFixed(2);
       }
 
-      if (!product) {
-        alert("No product found. Redirecting...");
-        window.location.href = "index.html";
-        return;
+      function showPaymentActions() {
+        if (paymentSection) paymentSection.style.display = 'block';
+        // Optionally show amount on button label
+        if (upiButton) {
+          const baseText = 'Pay via UPI App';
+          upiButton.querySelector('i')?.classList.add('fa-wallet');
+          upiButton.innerHTML = `<i class="fas fa-wallet"></i> ${baseText} (₹${payableAmount.toFixed(2)})`;
+        }
       }
-      document.getElementById("productName").textContent = product.product_name;
-      document.getElementById("productDescription").textContent = product.description;
-      document.getElementById("productCategory").textContent = product.category;
-      document.getElementById("productPrice").textContent = product.price;
-      document.getElementById("productImage").style.backgroundImage = `url(${product.image_url})`;
-      const upiButton = document.getElementById("upiPayButton");
-      upiButton.addEventListener("click", async function (e) {
-        e.preventDefault();
-        const user = auth.currentUser;
-        if (!user) {
-          alert("⚠️ Please log in to make a payment.");
-          window.location.href = "index.html#loginModal";
-          return;
+
+      function buildUpiLink(amount) {
+        const pa = 'dipaktaywade3@okaxis'; // payee UPI ID
+        const pn = 'CampusMart';
+        const tn = `${paymentMode === 'reserve' ? 'Reservation 5%' : 'Full Payment'} - ${currentProduct?.product_name || 'Product'}`;
+        const params = new URLSearchParams({ pa, pn, am: amount.toFixed(2), cu: 'INR', tn });
+        return `upi://pay?${params.toString()}`;
+      }
+
+      function setWhatsappLink() {
+        if (!whatsappInquireBtn) return;
+        const num = '918766880183';
+        const name = encodeURIComponent(currentProduct?.product_name || 'Product');
+        const price = encodeURIComponent(`₹${(currentProduct?.price || payableAmount || 0)}`);
+        const msg = encodeURIComponent(`Hi CampusMart, I have a question about "${currentProduct?.product_name || ''}" priced at ${price}.`);
+        whatsappInquireBtn.href = `https://wa.me/${num}?text=${msg}`;
+      }
+
+      applyCouponBtn && applyCouponBtn.addEventListener('click', () => {
+        const val = (couponInput?.value || '').trim().toUpperCase();
+        if (val === 'CAMPUSMART') {
+          couponApplied = true;
+          if (couponMsg) couponMsg.style.display = 'block';
+          if (couponErr) couponErr.style.display = 'none';
+        } else {
+          couponApplied = false;
+          if (couponMsg) couponMsg.style.display = 'none';
+          if (couponErr) couponErr.style.display = 'block';
         }
-        const buyerInfo = {
-          userId: user.uid,
-          email: user.email,
-          buyer_name: user.displayName || "anonymous",
-          productId: product.id || "",
-          productName: product.product_name || "",
-          price: product.price || "",
-          category: product.category || "",
-          image_url: product.image_url || "",
-          timestamp: new Date().toISOString()
-        };
-        try {
-          await push(ref(db, "Payviaupi"), buyerInfo);
-          console.log("✅ Buyer info stored in Payviaupi:", buyerInfo);
-        } catch (err) {
-          console.error("❌ Failed to store Payviaupi info:", err);
-        }
-        const upiLink = `upi://pay?pa=dipaktaywade3@okaxis&pn=CampusMart&am=${product.price}&cu=INR`;
-        window.location.href = upiLink;
+        refreshAmounts();
       });
-    });
-    window.showProofPopup = () => {
-      document.getElementById("proofSuccessPopup").style.display = "block";
-    };
-    window.closeProofPopup = () => {
-      document.getElementById("proofSuccessPopup").style.display = "none";
-    };
+
+      // Initialize active state (default full)
+      if (fullPayBtn && reserveBtn) {
+        fullPayBtn.classList.add('active');
+        reserveBtn.classList.remove('active');
+      }
+
+      // Mode selection handlers -> reveal actions and refresh amounts
+      if (fullPayBtn) fullPayBtn.addEventListener('click', () => {
+        paymentMode = 'full';
+        if (fullPayBtn && reserveBtn) {
+          fullPayBtn.classList.add('active');
+          reserveBtn.classList.remove('active');
+        }
+        refreshAmounts();
+        showPaymentActions();
+      });
+      if (reserveBtn) reserveBtn.addEventListener('click', () => {
+        paymentMode = 'reserve';
+        if (fullPayBtn && reserveBtn) {
+          reserveBtn.classList.add('active');
+          fullPayBtn.classList.remove('active');
+        }
+        refreshAmounts();
+        showPaymentActions();
+      });
+
+      // UPI deep link
+      if (upiButton) upiButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        refreshAmounts(); // ensure latest amount
+        const link = buildUpiLink(payableAmount);
+        window.location.href = link;
+      });
+
+      // Init WhatsApp link once product is loaded
+      setWhatsappLink();
     let currentUser = null;
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
