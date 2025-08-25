@@ -54,22 +54,7 @@ body {
   transition: all 0.3s ease;
 }
 
-.product-description {
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  min-height: 2.6em !important;
-  max-height: 2.6em !important;
-  line-height: 1.3em !important;
-  margin-bottom: 8px !important;
-  color: #222 !important;
-  font-size: 1rem !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-}
+
 /* --- Fix: Center and Style Main Headings, Forms, and Sections --- */
 /* Mobile Tray Styles */
 .mobile-tray {
@@ -133,8 +118,6 @@ body {
   color: #181818;
 }
 
-
-/* Center and style the main heading */
 .available-items-heading, #availableItemsHeading, .shop-section > h2, .shop-section > h1 {
   text-align: center;
   font-size: 2.1rem;
@@ -434,7 +417,66 @@ body {
     box-sizing: border-box;
   }
 }
+/* ...existing code... */
 
+.product-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 18px 12px 20px 12px;
+  margin-bottom: 18px;
+}
+
+.main-image {
+  width: 100%;
+  max-width: 340px;
+  max-height: 320px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 18px auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+  background: #fafbfc;
+}
+
+.thumbnail-gallery {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.thumbnail-img {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid #eee;
+  box-shadow: 0 1px 6px #0002;
+  background: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.thumbnail-img.selected,
+.thumbnail-img:focus {
+  border: 2px solid #1a73e8;
+  box-shadow: 0 2px 8px #1a73e822;
+}
+
+@media (max-width: 700px) {
+  .main-image {
+    max-width: 98vw;
+    max-height: 220px;
+  }
+  .product-image {
+    padding: 10px 2vw 14px 2vw;
+  }
+}
 
 /* --- CATEGORY HORIZONTAL SCROLL FOR MOBILE --- */
 @media (max-width: 767px) {
@@ -1003,7 +1045,7 @@ body {
 }
 
 .demo-banner::before {
-  content: '🧪 DEMO MODE';
+  content: '🧪 BETA MODE';
   position: absolute;
   top: -12px;
   left: 20px;
@@ -1589,7 +1631,21 @@ font-weight: 700;
     display: none !important;
   }
 }
-
+.product-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;         /* Show only 2 lines */
+  line-clamp: 2;                 /* Standard property for compatibility */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.6em;             /* Keeps card heights consistent */
+  max-height: 2.6em;
+  line-height: 1.3em;
+  margin-bottom: 8px;
+  color: #222;
+  font-size: 1rem;
+  word-break: break-word;
+}
 /* Only show the notification button on mobile (max-width: 420px) */
 #enableNotifyFab {
   display: none !important;
@@ -1623,4 +1679,64 @@ font-weight: 700;
   align-items: center;
   gap: 10px;
   justify-content: flex-start;
+}
+
+.product-description {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-height: 2.6em !important;
+  max-height: 2.6em !important;
+  line-height: 1.3em !important;
+  margin-bottom: 8px !important;
+  color: #222 !important;
+  font-size: 1rem !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+}
+
+/* --- Compact info beside Choose Payment Mode --- */
+.cm-mode-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.cm-mode-info {
+  flex: 1 1 0;
+  background: #ffffff;
+  border: 1px solid #e6eef7;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.cm-mode-select {
+  flex: 1 1 0;
+}
+.cm-mode-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.cm-mode-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cm-mode-col-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.cm-mode-info ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.cm-mode-info li {
+  margin: 2px 0;
+}
+
+@media (max-width: 768px) {
+  .cm-mode-row { flex-direction: column; }
+  .cm-mode-select { order: 2; }
 }
